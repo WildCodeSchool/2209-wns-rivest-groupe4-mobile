@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Demo from './components/Demo';
 
 export default function App() {

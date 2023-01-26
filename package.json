@@ -7,8 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint .",
-    "format": "prettier --write \"**/*.{ts.tsx}\"",
+    "lint": "echo '----- Checking Frontend...' && prettier --debug-check . && eslint --ext .tsx . && echo '----- Done!'",
+    "fix": "prettier --write . && eslint --fix --ext .tsx .",
     "prepare": "husky install"
   },
   "dependencies": {
