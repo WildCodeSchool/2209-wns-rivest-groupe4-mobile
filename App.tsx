@@ -1,8 +1,8 @@
+import Nav from './features/Nav';
 import { StyleSheet } from 'react-native';
-import LoginScreen from './screens/LoginScreen';
 
 export default function App() {
-  return <LoginScreen />;
+  return <Nav />;
 }
 
 const styles = StyleSheet.create({});
