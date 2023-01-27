@@ -9,7 +9,6 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   rules: {
     'arrow-body-style': ['error'],
-    'no-restricted-imports': ['error', 'import1', 'import2'],
   },
   settings: {
     'import/ignore': ['react-native'],
