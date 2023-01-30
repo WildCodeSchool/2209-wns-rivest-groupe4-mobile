@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native';
-import Demo from './components/Demo';
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import LoginForm from '../components/LoginForm';
 
-export default function App() {
+export default function LoginScreen() {
   return (
     <View style={styles.container}>
-      <Text> App</Text>
-      <Demo />
+      <Text>LoginScreen</Text>
+      <LoginForm />
     </View>
   );
 }
