@@ -1,14 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Settings() {
   const [isModalVisible, setModalVisible] = useState(true);
@@ -16,8 +10,7 @@ export default function Settings() {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   return (
     <View style={styles.flexView}>
@@ -39,7 +32,7 @@ export default function Settings() {
           <View style={styles.center}>
             <View style={styles.barIcon} />
             <TouchableHighlight
-              onPress={() => navigation.navigate('Profil')}
+              onPress={() => navigation.navigate('Root', { name: 'Profil' })}
               style={styles.btnClickContain}
               underlayColor="none"
             >
@@ -54,9 +47,7 @@ export default function Settings() {
               </View>
             </TouchableHighlight>
             <TouchableHighlight
-              onPress={() =>
-                navigation.navigate('jesaispas', { screen: 'Best' })
-              }
+              onPress={() => navigation.navigate('Root', { name: 'Profil' })}
               style={styles.btnClickContain}
               underlayColor="none"
             >
@@ -71,7 +62,7 @@ export default function Settings() {
               </View>
             </TouchableHighlight>
             <TouchableHighlight
-              onPress={() => navigation.navigate('Best')}
+              onPress={() => navigation.navigate('Root', { name: 'Best' })}
               style={styles.btnClickContain}
               underlayColor="none"
             >

@@ -1,19 +1,22 @@
 import * as React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from '../screens/LoginScreen';
 import Settings from './Settings';
+import EditorScreen from '../screens/EditorScreen';
 
 export default function Nav() {
   const Tab = createBottomTabNavigator();
+
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
+          initialRouteName: 'Root',
           tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+            let iconName: keyof typeof Ionicons.glyphMap | undefined;
 
             if (route.name === 'Best') {
               iconName = focused ? 'star-outline' : 'star';
@@ -33,7 +36,7 @@ export default function Nav() {
       >
         <Tab.Screen
           name="Best"
-          component={LoginScreen}
+          component={EditorScreen}
           options={{
             headerStyle: {
               backgroundColor: '#1D3148',
@@ -73,7 +76,13 @@ export default function Nav() {
         />
       </Tab.Navigator>
       <Tab.Group>
-        <Tab.Screen name="Home" component={Settings} />
+        <Tab.Screen name="Editor" component={EditorScreen} />
+        {/* <Tab.Screen name="" component={} />
+        <Tab.Screen name="" component={} />
+        <Tab.Screen name="" component={} />
+        <Tab.Screen name="" component={} />
+        <Tab.Screen name="" component={} />
+        <Tab.Screen name="" component={} /> */}
       </Tab.Group>
     </NavigationContainer>
   );
