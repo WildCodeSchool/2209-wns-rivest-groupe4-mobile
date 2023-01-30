@@ -1,11 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import LoginForm from '../components/LoginForm';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import LoginForm from '../features/LoginForm';
 
 export default function LoginScreen() {
   return (
     <View style={styles.container}>
-      <Text>LoginScreen</Text>
+      <Text style={styles.title}>Welcome to</Text>
+      <Image style={styles.logo} source={require('../assets/logo.png')} />
       <LoginForm />
     </View>
   );
@@ -14,8 +15,16 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 80,
+  },
+  title: {
+    color: '#fff',
+    fontSize: 40,
+  },
+  logo: {
+    width: 100,
+    height: 100,
   },
 });
