@@ -1,3 +1,4 @@
+import Nav from './features/Nav';
 import { StyleSheet, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -38,6 +39,7 @@ export default function App() {
         end={{ x: 1, y: 1 }}
         style={styles.container}
       >
+        <Nav />
         <AboutMeScreen />
       </LinearGradient>
     );
