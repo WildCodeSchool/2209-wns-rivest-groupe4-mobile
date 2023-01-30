@@ -15,6 +15,18 @@ module.exports = function (api) {
           },
         },
       ],
+      [
+        'module:react-native-dotenv',
+        {
+          allowList: ['FRONTEND_URL', 'FRONTEND_PORT'],
+          envName: 'APP_ENV',
+          moduleName: '@env',
+          path: '.env',
+          safe: false,
+          allowUndefined: true,
+          verbose: false,
+        },
+      ],
     ],
   };
 };

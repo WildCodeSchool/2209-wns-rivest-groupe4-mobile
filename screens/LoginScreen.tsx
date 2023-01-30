@@ -1,20 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import LoginForm from '../features/LoginForm';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginScreen() {
   return (
     <View style={styles.container}>
-      <LinearGradient
-        // Background Linear Gradient
-        colors={['#1d2448', '#131d2f']}
-        end={{ x: 0.8, y: 1.0 }}
-        style={styles.background}
-      >
-        <Text style={styles.title}>Welcome to</Text>
-        <LoginForm />
-      </LinearGradient>
+      <Text style={styles.title}>Welcome to</Text>
+      <LoginForm />
     </View>
   );
 }
