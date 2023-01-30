@@ -77,12 +77,6 @@ export default function Nav() {
       </Tab.Navigator>
       <Tab.Group>
         <Tab.Screen name="Editor" component={EditorScreen} />
-        {/* <Tab.Screen name="" component={} />
-        <Tab.Screen name="" component={} />
-        <Tab.Screen name="" component={} />
-        <Tab.Screen name="" component={} />
-        <Tab.Screen name="" component={} />
-        <Tab.Screen name="" component={} /> */}
       </Tab.Group>
     </NavigationContainer>
   );
