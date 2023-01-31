@@ -1,10 +1,17 @@
-import Nav from './features/Nav';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { AuthTokenContext } from 'context/AuthTokenContext';
+import * as SecureStore from 'expo-secure-store';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useFonts } from 'expo-font';
-import { LinearGradient } from 'expo-linear-gradient';
 import LoginScreen from './screens/LoginScreen';
-import ContactScreen from './screens/ContactScreen';
-import AboutMeScreen from './screens/AboutMeScreen';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useFonts } from 'expo-font';
+
+// Initialize Apollo Client
+const client = new ApolloClient({
+  uri: 'http://localhost:5001/',
+  cache: new InMemoryCache(),
+});
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,27 +36,37 @@ export default function App() {
     'Barlow-ThinItalic': require('./assets/fonts/Barlow-ThinItalic.ttf'),
   });
 
-  if (!fontsLoaded) {
-    return <View></View>;
-  } else {
-    return (
-      <LinearGradient
-        colors={['#1d2448', '#131d2f']}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.container}
-      >
-        <Nav />
-        <AboutMeScreen />
-      </LinearGradient>
-    );
-  }
+  const [authToken, setAuthToken] = useState<string | undefined>();
+
+  useEffect(() => {
+    (async () => {
+      const result = await SecureStore.getItemAsync('authToken');
+      result && setAuthToken(result);
+    })();
+  }, []);
+
+  return (
+    <ApolloProvider client={client}>
+      <AuthTokenContext.Provider value={{ authToken, setAuthToken }}>
+        <LinearGradient
+          colors={['#1d2448', '#131d2f']}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.container}
+        >
+          <View style={styles.container}>
+            <LoginScreen />
+          </View>
+        </LinearGradient>
+      </AuthTokenContext.Provider>
+    </ApolloProvider>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-start',
   },
 });
