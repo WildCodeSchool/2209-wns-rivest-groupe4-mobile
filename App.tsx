@@ -3,15 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import AboutMeScreen from './screens/AboutMeScreen';
 import LoginScreen from './screens/LoginScreen';
 import BottomNav from './features/BottomNav';
 import ContactScreen from './screens/ContactScreen';
+import { AuthContext } from 'context/AuthContext';
 
-// @ts-ignore
-export const AuthContext = React.createContext();
 const Stack = createNativeStackNavigator();
 
 // Initialize Apollo Client
@@ -19,6 +18,46 @@ const client = new ApolloClient({
   uri: 'http://localhost:5001/',
   cache: new InMemoryCache(),
 });
+
+type ReducerState = {
+  isLoading: boolean;
+  isSignout: boolean;
+  userToken: string | null | undefined;
+};
+
+type ReducerAction = {
+  type: 'RESTORE_TOKEN' | 'SIGN_IN' | 'SIGN_OUT';
+  token: string | null | undefined;
+};
+
+const initialState: ReducerState = {
+  isLoading: true,
+  isSignout: false,
+  userToken: null,
+};
+
+const reducer = (prevState: ReducerState, action: ReducerAction) => {
+  switch (action.type) {
+    case 'RESTORE_TOKEN':
+      return {
+        ...prevState,
+        userToken: action.token,
+        isLoading: false,
+      };
+    case 'SIGN_IN':
+      return {
+        ...prevState,
+        isSignout: false,
+        userToken: action.token,
+      };
+    case 'SIGN_OUT':
+      return {
+        ...prevState,
+        isSignout: true,
+        userToken: null,
+      };
+  }
+};
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -43,35 +82,7 @@ export default function App() {
     'Barlow-ThinItalic': require('./assets/fonts/Barlow-ThinItalic.ttf'),
   });
 
-  const [state, dispatch] = React.useReducer(
-    (prevState: any, action: { type: any; token: any }) => {
-      switch (action.type) {
-        case 'RESTORE_TOKEN':
-          return {
-            ...prevState,
-            userToken: action.token,
-            isLoading: false,
-          };
-        case 'SIGN_IN':
-          return {
-            ...prevState,
-            isSignout: false,
-            userToken: action.token,
-          };
-        case 'SIGN_OUT':
-          return {
-            ...prevState,
-            isSignout: true,
-            userToken: null,
-          };
-      }
-    },
-    {
-      isLoading: true,
-      isSignout: false,
-      userToken: null,
-    },
-  );
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   React.useEffect(() => {
     const bootstrapAsync = async () => {
@@ -87,28 +98,20 @@ export default function App() {
     bootstrapAsync();
   }, []);
 
-  const authContext = React.useMemo(
+  const authContext = useMemo(
     () => ({
-      signIn: async (email: string, password: string) => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-        // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      signIn: async (token: string) => {
+        dispatch({ type: 'SIGN_IN', token });
       },
-      signOut: () =>
+      signOut: async () => {
+        await SecureStore.deleteItemAsync('authToken');
         dispatch({
           type: 'SIGN_OUT',
           token: null,
-        }),
-      signUp: async (email: string, password: string, pseudo: string) => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-        // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        });
+      },
+      signUp: async (token: string) => {
+        dispatch({ type: 'SIGN_IN', token });
       },
     }),
     [],

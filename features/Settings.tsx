@@ -3,11 +3,11 @@ import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from 'App';
+import { AuthContext } from 'context/AuthContext';
 
 export default function Settings() {
   const [isModalVisible, setModalVisible] = useState(true);
-  //@ts-ignore
+
   const { signOut } = React.useContext(AuthContext);
 
   const toggleModal = () => {
