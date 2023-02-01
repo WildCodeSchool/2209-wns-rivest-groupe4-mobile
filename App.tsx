@@ -1,11 +1,22 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { AuthTokenContext } from 'context/AuthTokenContext';
-import * as SecureStore from 'expo-secure-store';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import LoginScreen from './screens/LoginScreen';
-import { LinearGradient } from 'expo-linear-gradient';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
+import * as SecureStore from 'expo-secure-store';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import AboutMeScreen from './screens/AboutMeScreen';
+import LoginScreen from './screens/LoginScreen';
+import Settings from './features/Settings';
+import EditorScreen from './screens/EditorScreen';
+import ContactScreen from './screens/ContactScreen';
+
+// @ts-ignore
+export const AuthContext = React.createContext();
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 // Initialize Apollo Client
 const client = new ApolloClient({
@@ -36,33 +47,137 @@ export default function App() {
     'Barlow-ThinItalic': require('./assets/fonts/Barlow-ThinItalic.ttf'),
   });
 
-  const [authToken, setAuthToken] = useState<string | undefined>();
+  const [state, dispatch] = React.useReducer(
+    (prevState: any, action: { type: any; token: any }) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    },
+  );
 
-  useEffect(() => {
-    (async () => {
-      const result = await SecureStore.getItemAsync('authToken');
-      result && setAuthToken(result);
-    })();
+  React.useEffect(() => {
+    const bootstrapAsync = async () => {
+      let userToken;
+      try {
+        userToken = await SecureStore.getItemAsync('authToken');
+      } catch (err) {
+        console.error(err);
+      }
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+    };
+
+    bootstrapAsync();
   }, []);
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (email: string, password: string) => {
+        // In a production app, we need to send some data (usually username, password) to server and get a token
+        // We will also need to handle errors if sign in failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
+
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      },
+      signOut: () =>
+        dispatch({
+          type: 'SIGN_OUT',
+          token: null,
+        }),
+      signUp: async (email: string, password: string, pseudo: string) => {
+        // In a production app, we need to send user data to server and get a token
+        // We will also need to handle errors if sign up failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
+
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      },
+    }),
+    [],
+  );
 
   return (
     <ApolloProvider client={client}>
-      <AuthTokenContext.Provider value={{ authToken, setAuthToken }}>
-        <LinearGradient
-          colors={['#1d2448', '#131d2f']}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.container}
-        >
-          <View style={styles.container}>
-            <LoginScreen />
-          </View>
-        </LinearGradient>
-      </AuthTokenContext.Provider>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            {state.userToken == null ? (
+              <Stack.Screen
+                name="SignIn"
+                component={LoginScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            ) : (
+              <>
+                <Stack.Screen
+                  name="Home"
+                  component={BottomNav}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="About"
+                  component={AboutMeScreen}
+                  options={{
+                    title: 'About Me',
+                    headerStyle: {
+                      backgroundColor: '#1d2448',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontWeight: 'bold',
+                      fontSize: 25,
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="Contact"
+                  component={ContactScreen}
+                  options={{
+                    title: 'Contact us',
+                    headerStyle: {
+                      backgroundColor: '#1d2448',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontWeight: 'bold',
+                      fontSize: 25,
+                    },
+                  }}
+                />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthContext.Provider>
     </ApolloProvider>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -70,3 +185,65 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+function BottomNav() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap | undefined;
+
+          if (route.name === 'Best') {
+            iconName = focused ? 'star-outline' : 'star';
+          } else if (route.name === 'Login') {
+            iconName = focused ? 'person-outline' : 'person';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'settings-outline' : 'md-settings-sharp';
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+
+        tabBarStyle: { backgroundColor: '#1d2448' },
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'lightgrey',
+      })}
+    >
+      <Tab.Screen
+        name="Best"
+        component={EditorScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#1d2448',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Login"
+        component={EditorScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#1d2448',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          headerShown: false,
+          unmountOnBlur: true,
+        }}
+      />
+    </Tab.Navigator>
+  );
+}

@@ -5,7 +5,7 @@ import { Button } from 'react-native-ui-lib';
 import { TextField } from 'react-native-ui-lib/src/incubator';
 
 import { gql, useLazyQuery } from '@apollo/client';
-import { AuthTokenContext } from 'context/AuthTokenContext';
+import { AuthContext } from 'App';
 
 const GET_TOKEN = gql`
   query Query($password: String!, $email: String!) {
@@ -17,11 +17,13 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { authToken, setAuthToken } = useContext(AuthTokenContext);
+  //@ts-ignore
+  const { signIn } = React.useContext(AuthContext);
 
   const [login, { loading, error, data }] = useLazyQuery(GET_TOKEN, {
     onCompleted: async (data) => {
-      setAuthToken(data.getToken);
+      //   setAuthToken(data.getToken);
+      //signIn(data.getToken);
       await SecureStore.setItemAsync('authToken', data.getToken);
     },
   });

@@ -1,14 +1,22 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import LoginForm from '../features/LoginForm';
 
 export default function LoginScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to</Text>
-      <Image style={styles.logo} source={require('../assets/logo.png')} />
-      <LoginForm />
-    </View>
+    <LinearGradient
+      colors={['#1d2448', '#131d2f']}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Welcome to</Text>
+        <Image style={styles.logo} source={require('../assets/logo.png')} />
+        <LoginForm />
+      </View>
+    </LinearGradient>
   );
 }
 
