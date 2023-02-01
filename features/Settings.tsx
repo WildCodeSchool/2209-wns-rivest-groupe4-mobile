@@ -3,9 +3,12 @@ import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from 'App';
 
 export default function Settings() {
   const [isModalVisible, setModalVisible] = useState(true);
+  //@ts-ignore
+  const { signOut } = React.useContext(AuthContext);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -32,7 +35,7 @@ export default function Settings() {
           <View style={styles.center}>
             <View style={styles.barIcon} />
             <TouchableHighlight
-              onPress={() => navigation.navigate('Root', { name: 'Profil' })}
+              onPress={() => navigation.navigate({ name: 'About' })}
               style={styles.btnClickContain}
               underlayColor="none"
             >
@@ -47,7 +50,7 @@ export default function Settings() {
               </View>
             </TouchableHighlight>
             <TouchableHighlight
-              onPress={() => navigation.navigate('Root', { name: 'Profil' })}
+              onPress={() => navigation.navigate({ name: 'Contact' })}
               style={styles.btnClickContain}
               underlayColor="none"
             >
@@ -62,7 +65,7 @@ export default function Settings() {
               </View>
             </TouchableHighlight>
             <TouchableHighlight
-              onPress={() => navigation.navigate('Root', { name: 'Best' })}
+              onPress={() => signOut()}
               style={styles.btnClickContain}
               underlayColor="none"
             >
