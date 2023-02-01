@@ -1,22 +1,18 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import AboutMeScreen from './screens/AboutMeScreen';
 import LoginScreen from './screens/LoginScreen';
-import Settings from './features/Settings';
-import EditorScreen from './screens/EditorScreen';
+import BottomNav from './features/BottomNav';
 import ContactScreen from './screens/ContactScreen';
 
 // @ts-ignore
 export const AuthContext = React.createContext();
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 
 // Initialize Apollo Client
 const client = new ApolloClient({
@@ -185,65 +181,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-function BottomNav() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap | undefined;
-
-          if (route.name === 'Best') {
-            iconName = focused ? 'star-outline' : 'star';
-          } else if (route.name === 'Login') {
-            iconName = focused ? 'person-outline' : 'person';
-          } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings-outline' : 'md-settings-sharp';
-          }
-
-          // You can return any component that you like here!
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-
-        tabBarStyle: { backgroundColor: '#1d2448' },
-        tabBarActiveTintColor: 'white',
-        tabBarInactiveTintColor: 'lightgrey',
-      })}
-    >
-      <Tab.Screen
-        name="Best"
-        component={EditorScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: '#1d2448',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Login"
-        component={EditorScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: '#1d2448',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={Settings}
-        options={{
-          headerShown: false,
-          unmountOnBlur: true,
-        }}
-      />
-    </Tab.Navigator>
-  );
-}

@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import LoginForm from '../features/LoginForm';
 
 export default function LoginScreen() {
@@ -11,11 +12,13 @@ export default function LoginScreen() {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>Welcome to</Text>
-        <Image style={styles.logo} source={require('../assets/logo.png')} />
-        <LoginForm />
-      </View>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.title}>Welcome to</Text>
+          <Image style={styles.logo} source={require('../assets/logo.png')} />
+          <LoginForm />
+        </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
