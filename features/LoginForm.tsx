@@ -1,15 +1,17 @@
 import * as SecureStore from 'expo-secure-store';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import { TextField } from 'react-native-ui-lib/src/incubator';
 
 import { gql, useLazyQuery } from '@apollo/client';
-import { AuthContext } from 'App';
+import { AuthContext } from 'context/AuthContext';
 
 const GET_TOKEN = gql`
-  query Query($password: String!, $email: String!) {
-    getToken(password: $password, email: $email)
+  query GetTokenWithUser($password: String!, $email: String!) {
+    getTokenWithUser(password: $password, email: $email) {
+      token
+    }
   }
 `;
 
@@ -17,14 +19,12 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  //@ts-ignore
   const { signIn } = React.useContext(AuthContext);
 
   const [login, { loading, error, data }] = useLazyQuery(GET_TOKEN, {
     onCompleted: async (data) => {
-      //   setAuthToken(data.getToken);
-      //signIn(data.getToken);
-      await SecureStore.setItemAsync('authToken', data.getToken);
+      await SecureStore.setItemAsync('authToken', data.getTokenWithUser.token);
+      signIn(data.getTokenWithUser.token);
     },
   });
 
@@ -71,14 +71,14 @@ export default function LoginForm() {
       </View>
       <Button
         label={'Login'}
-        onPress={() =>
+        onPress={() => {
           login({
             variables: {
               password: password,
               email: email,
             },
-          })
-        }
+          });
+        }}
       ></Button>
     </View>
   );
