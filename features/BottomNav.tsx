@@ -14,10 +14,10 @@ export default function BottomNav() {
 
           if (route.name === 'Best') {
             iconName = focused ? 'star-outline' : 'star';
-          } else if (route.name === 'Login') {
+          } else if (route.name === 'Project') {
             iconName = focused ? 'person-outline' : 'person';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings-outline' : 'md-settings-sharp';
+            iconName = focused ? 'md-settings-sharp' : 'md-settings-sharp';
           }
 
           // You can return any component that you like here!
@@ -33,6 +33,7 @@ export default function BottomNav() {
         name="Best"
         component={EditorScreen}
         options={{
+          title: 'Best Share',
           headerStyle: {
             backgroundColor: '#1d2448',
           },
@@ -43,9 +44,10 @@ export default function BottomNav() {
         }}
       />
       <Tab.Screen
-        name="Login"
+        name="Project"
         component={EditorScreen}
         options={{
+          title: 'My Project',
           headerStyle: {
             backgroundColor: '#1d2448',
           },

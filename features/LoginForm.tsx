@@ -25,6 +25,7 @@ export default function LoginForm() {
     onCompleted: async (data) => {
       await SecureStore.setItemAsync('authToken', data.getTokenWithUser.token);
       signIn(data.getTokenWithUser.token);
+      console.log(data.getTokenWithUser);
     },
   });
 

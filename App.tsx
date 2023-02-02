@@ -10,12 +10,13 @@ import LoginScreen from './screens/LoginScreen';
 import BottomNav from './features/BottomNav';
 import ContactScreen from './screens/ContactScreen';
 import { AuthContext } from 'context/AuthContext';
+import { BACKEND_URL, BACKEND_PORT } from '@env';
 
 const Stack = createNativeStackNavigator();
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  uri: 'http://localhost:5001/',
+  uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
   cache: new InMemoryCache(),
 });
 
@@ -121,7 +122,7 @@ export default function App() {
     <ApolloProvider client={client}>
       <AuthContext.Provider value={authContext}>
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator initialRouteName="Home">
             {state.userToken == null ? (
               <Stack.Screen
                 name="SignIn"
