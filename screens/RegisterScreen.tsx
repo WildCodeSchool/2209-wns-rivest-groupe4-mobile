@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import RegisterForm from 'features/RegisterForm';
 import React from 'react';
 import {
   Image,
@@ -10,24 +11,19 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
-  useWindowDimensions,
 } from 'react-native';
 
-import LoginForm from '../features/LoginForm';
-
-export default function LoginScreen() {
-  const windowHeight = useWindowDimensions().height;
-
+export default function RegisterScreen() {
   return (
     <LinearGradient
       colors={['#1d2448', '#131d2f']}
       start={{ x: 0, y: 1 }}
       end={{ x: 1, y: 1 }}
-      style={{ ...styles.container, minHeight: Math.round(windowHeight) }}
+      style={styles.container}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ ...styles.container, minHeight: Math.round(windowHeight) }}
+        style={styles.container}
       >
         <ScrollView>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -37,7 +33,7 @@ export default function LoginScreen() {
                 style={styles.logo}
                 source={require('../assets/logo.png')}
               />
-              <LoginForm />
+              <RegisterForm />
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
