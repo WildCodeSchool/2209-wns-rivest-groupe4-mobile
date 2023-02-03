@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Image,
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MyProjects from '../features/MyProjects';
 import { ScrollView } from 'react-native-gesture-handler';

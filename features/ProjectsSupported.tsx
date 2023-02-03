@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'react-native-ui-lib';
 
 export default function ProjectSupport() {
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     alignItems: 'center',
-    //justifyContent: 'flex-start',
     margin: 15,
   },
   logo: {
