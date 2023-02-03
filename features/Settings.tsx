@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from 'context/AuthContext';
+import { AuthContext } from 'contexts/AuthContext';
 
 export default function Settings() {
   const [isModalVisible, setModalVisible] = useState(true);
