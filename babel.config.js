@@ -18,7 +18,12 @@ module.exports = function (api) {
       [
         'module:react-native-dotenv',
         {
-          allowList: ['FRONTEND_URL', 'FRONTEND_PORT'],
+          allowList: [
+            'FRONTEND_URL',
+            'FRONTEND_PORT',
+            'BACKEND_URL',
+            'BACKEND_PORT',
+          ],
           envName: 'APP_ENV',
           moduleName: '@env',
           path: '.env',
