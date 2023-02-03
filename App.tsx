@@ -5,8 +5,6 @@ import { AuthContext } from 'contexts/AuthContext';
 import { User, UserContext } from 'contexts/UserContext';
 import { useFonts } from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
-import { AuthContext } from 'context/AuthContext';
-import { BACKEND_URL, BACKEND_PORT } from '@env';
 import React, { useMemo, useState } from 'react';
 import AuthStack from 'stacks/AuthStack';
 import HomeStack from 'stacks/HomeStack';
