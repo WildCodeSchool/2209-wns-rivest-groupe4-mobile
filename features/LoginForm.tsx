@@ -9,6 +9,8 @@ import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Checkbox, LoaderScreen } from 'react-native-ui-lib';
 import { TextField } from 'react-native-ui-lib/src/incubator';
+import { gql, useLazyQuery } from '@apollo/client';
+import { AuthContext } from 'context/AuthContext';
 import { AuthStackNavigatorParamList } from 'stacks/AuthStack';
 
 const GET_TOKEN = gql`
@@ -51,6 +53,7 @@ export default function LoginForm() {
       }
       setUser(data.user);
       signIn(data.getTokenWithUser.token);
+      console.log(data.getTokenWithUser);
     },
     onError(error) {
       alert(error.message);

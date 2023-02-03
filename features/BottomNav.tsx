@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ProjectScreen from '../screens/ProjectScreen';
 import Settings from '../features/Settings';
 import EditorScreen from '../screens/EditorScreen';
 
@@ -14,10 +15,10 @@ export default function BottomNav() {
 
           if (route.name === 'Best') {
             iconName = focused ? 'star-outline' : 'star';
-          } else if (route.name === 'Login') {
+          } else if (route.name === 'Project') {
             iconName = focused ? 'person-outline' : 'person';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings-outline' : 'md-settings-sharp';
+            iconName = focused ? 'md-settings-sharp' : 'md-settings-sharp';
           }
 
           // You can return any component that you like here!
@@ -33,6 +34,7 @@ export default function BottomNav() {
         name="Best"
         component={EditorScreen}
         options={{
+          title: 'Best Share',
           headerStyle: {
             backgroundColor: '#1d2448',
           },
@@ -43,9 +45,10 @@ export default function BottomNav() {
         }}
       />
       <Tab.Screen
-        name="Login"
-        component={EditorScreen}
+        name="Project"
+        component={ProjectScreen}
         options={{
+          title: `Suivi d'activité`,
           headerStyle: {
             backgroundColor: '#1d2448',
           },
