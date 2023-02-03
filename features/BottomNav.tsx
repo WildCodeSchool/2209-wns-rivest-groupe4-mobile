@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ProjectScreen from 'screens/ProjectScreen';
 import Settings from '../features/Settings';
 import EditorScreen from '../screens/EditorScreen';
 
@@ -45,9 +46,9 @@ export default function BottomNav() {
       />
       <Tab.Screen
         name="Project"
-        component={EditorScreen}
+        component={ProjectScreen}
         options={{
-          title: 'My Project',
+          title: `Suivi d'activité`,
           headerStyle: {
             backgroundColor: '#1d2448',
           },
