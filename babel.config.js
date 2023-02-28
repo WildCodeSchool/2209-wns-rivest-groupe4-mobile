@@ -3,14 +3,33 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      'react-native-reanimated/plugin',
       [
         'module-resolver',
         {
-          root: ['./src'],
+          root: ['./'],
           extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
           alias: {
-            '@components': './src/components',
+            '@components': './components',
+            '@screens': './screens',
           },
+        },
+      ],
+      [
+        'module:react-native-dotenv',
+        {
+          allowList: [
+            'FRONTEND_URL',
+            'FRONTEND_PORT',
+            'BACKEND_URL',
+            'BACKEND_PORT',
+          ],
+          envName: 'APP_ENV',
+          moduleName: '@env',
+          path: '.env',
+          safe: false,
+          allowUndefined: true,
+          verbose: false,
         },
       ],
     ],
