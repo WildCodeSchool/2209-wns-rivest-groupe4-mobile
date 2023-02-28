@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     alignItems: 'center',
-    margin: 15,
   },
   logo: {
     width: 20,

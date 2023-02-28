@@ -107,7 +107,7 @@ export default function MyAccount() {
             } else if (count >= 50) {
               //faire une modale
               setCount(0);
-              alert(`Vous avez effectué vos ${count} runs aujourd'hui `);
+              alert(`vous avez éffectuer vos ${count} run aujourd'hui `);
             } else setCount(count + 1);
           }}
         />
@@ -119,7 +119,7 @@ export default function MyAccount() {
             } else if (like >= 5) {
               //faire une modale
               setLike(0);
-              alert(`Vous avez effectué vos ${like} likes aujourd'hui `);
+              alert(`vous avez éffectuer vos ${like} like aujourd'hui `);
             } else setLike(like + 1);
           }}
         />
@@ -132,7 +132,7 @@ export default function MyAccount() {
               //faire une modale
               setComment(0);
               alert(
-                `Vous avez effectué vos ${comment} commentaires aujourd'hui `,
+                `vous avez éffectuer vos ${comment} commentaire aujourd'hui `,
               );
             } else setComment(comment + 1);
           }}

@@ -48,7 +48,7 @@ export default function BottomNav() {
         name="Project"
         component={ProjectScreen}
         options={{
-          title: `Suivi d'activité`,
+          title: `Account activities`,
           headerStyle: {
             backgroundColor: '#1d2448',
           },
