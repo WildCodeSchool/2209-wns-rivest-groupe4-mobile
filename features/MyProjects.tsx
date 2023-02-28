@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     alignItems: 'center',
-    margin: 15,
   },
   logo: {
     width: 26,
@@ -120,8 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'yellow',
     width: 100,
     textAlign: 'center',
-    textAlignVertical: 'center',
-    borderRadius: 10,
+    paddingVertical: 10,
   },
   access: {
     fontWeight: 'bold',

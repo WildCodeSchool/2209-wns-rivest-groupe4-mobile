@@ -14,17 +14,15 @@ export default function ProjectScreen() {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <ScrollView>
-        <KeyboardAvoidingView>
-          <View style={styles.container}>
-            <Text style={styles.title}>My Projects</Text>
-            <MyProjects />
-            <Text style={styles.title}>Projects Supported</Text>
-            <ProjectSupport />
-            <Text style={styles.title}> My Account Access </Text>
-            <MyAccount />
-          </View>
-        </KeyboardAvoidingView>
+      <ScrollView style={styles.container}>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={styles.title}>My Projects</Text>
+          <MyProjects />
+          <Text style={styles.title}>Projects Supported</Text>
+          <ProjectSupport />
+          <Text style={styles.title}> My Account Access </Text>
+          <MyAccount />
+        </View>
       </ScrollView>
     </LinearGradient>
   );
@@ -34,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
   },
   title: {
     color: '#fff',
