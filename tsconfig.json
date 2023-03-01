@@ -6,7 +6,6 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "jsx": "react-native",
-    "types": ["react-native"],
     "moduleResolution": "node",
     "target": "esnext",
     "resolveJsonModule": true,
@@ -15,5 +14,5 @@
       "@components/*": ["src/components/*"]
     }
   },
-  "exclude": ["node_modules/", "babel.config.js"]
+  "exclude": ["node_modules/", "babel.config.js"],
 }
