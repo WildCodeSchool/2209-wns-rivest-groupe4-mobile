@@ -10,12 +10,6 @@ import AuthStack from 'stacks/AuthStack';
 import HomeStack from 'stacks/HomeStack';
 import fonts from './assets/fonts/fonts';
 
-// Initialize Apollo Client
-const client = new ApolloClient({
-  uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
-  cache: new InMemoryCache(),
-});
-
 type ReducerState = {
   isLoading: boolean;
   isSignout: boolean;
@@ -26,6 +20,12 @@ type ReducerAction = {
   type: 'RESTORE_TOKEN' | 'SIGN_IN' | 'SIGN_OUT';
   token: string | null | undefined;
 };
+
+// Initialize Apollo Client
+const client = new ApolloClient({
+  uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
+  cache: new InMemoryCache(),
+});
 
 const initialState: ReducerState = {
   isLoading: true,
