@@ -10,7 +10,10 @@ export default function ContactForm() {
           placeholder="Enter your name"
           placeholderTextColor="white"
         ></TextInput>
-        <Image style={styles.logoUser} source={require('../assets/user.png')} />
+        <Image
+          style={styles.logoUser}
+          source={require('../../assets/user.png')}
+        />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
@@ -20,7 +23,7 @@ export default function ContactForm() {
           keyboardType="email-address"
           autoCapitalize="none"
         ></TextInput>
-        <Image style={styles.logoAt} source={require('../assets/at.png')} />
+        <Image style={styles.logoAt} source={require('../../assets/at.png')} />
       </View>
       <View style={styles.inputContainer}>
         <TextInput

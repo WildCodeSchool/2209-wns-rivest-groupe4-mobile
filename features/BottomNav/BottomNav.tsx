@@ -1,8 +1,8 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import ProjectScreen from '../screens/ProjectScreen';
-import Settings from '../features/Settings';
-import EditorScreen from '../screens/EditorScreen';
+import ProjectScreen from '../../screens/ProjectScreen';
+import Settings from '../Settings';
+import EditorScreen from '../../screens/EditorScreen';
 
 const Tab = createBottomTabNavigator();
 

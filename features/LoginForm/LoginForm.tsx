@@ -6,12 +6,12 @@ import { AuthContext } from 'contexts/AuthContext';
 import { UserContext } from 'contexts/UserContext';
 import * as SecureStore from 'expo-secure-store';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Checkbox, LoaderScreen } from 'react-native-ui-lib';
 import { TextField } from 'react-native-ui-lib/src/incubator';
 import { AuthStackNavigatorParamList } from 'stacks/AuthStack';
 
-const GET_TOKEN = gql`
+export const GET_TOKEN = gql`
   query GetTokenWithUser($password: String!, $email: String!) {
     getTokenWithUser(password: $password, email: $email) {
       token
@@ -53,6 +53,7 @@ export default function LoginForm() {
       signIn(data.getTokenWithUser.token);
     },
     onError(error) {
+      console.error(error);
       alert(error.message);
     },
   });
@@ -61,7 +62,7 @@ export default function LoginForm() {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       {loading ? (
-        <LoaderScreen color={'#fff'} />
+        <LoaderScreen testID="loader" color={'#fff'} />
       ) : (
         <>
           <View>
@@ -117,6 +118,7 @@ export default function LoginForm() {
             </TouchableOpacity>
           </View>
           <GradientButton
+            data-testId="login-button"
             gradient="cyanToBlue"
             onPress={() => {
               login({

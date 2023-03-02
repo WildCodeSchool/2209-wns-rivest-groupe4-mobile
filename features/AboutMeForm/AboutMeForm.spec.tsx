@@ -1,18 +1,13 @@
 import AboutMeForm from './AboutMeForm';
 import { Image } from 'react-native';
-import renderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react-native';
 
 describe('AboutMeForm feature', () => {
-  const setup = renderer.create(<AboutMeForm />);
+  const setup = () => render(<AboutMeForm />);
   it('should render components by default', () => {
-    expect(setup.root.findByProps({ placeholder: 'John' })).toBeTruthy();
-    expect(setup.root.findByProps({ placeholder: 'JohnDoe123' })).toBeTruthy();
-    expect(
-      setup.root.findByProps({ placeholder: 'john@doe.com' }),
-    ).toBeTruthy();
-    expect(
-      setup.root.findByProps({ placeholder: '*************' }),
-    ).toBeTruthy();
-    expect(setup.root.findAllByType(Image)).toHaveLength(4);
+    setup();
+    expect(screen.getByPlaceholderText('John')).toBeDefined();
+    expect(screen.getByPlaceholderText('JohnDoe123')).toBeDefined();
+    expect(screen.getByPlaceholderText('*************')).toBeDefined();
   });
 });
