@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "start": "set REACT_NATIVE_PACKAGER_HOSTNAME=192.168.86.100 && expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -15,6 +15,7 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "setupFiles": ["<rootDir>/jestSetup.js"],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "identity-obj-proxy"
@@ -26,7 +27,6 @@
     "@react-navigation/material-bottom-tabs": "^6.2.11",
     "@react-navigation/native": "^6.1.2",
     "@react-navigation/native-stack": "^6.9.8",
-    "@types/react-test-renderer": "^18.0.0",
     "expo": "~47.0.12",
     "expo-asset": "~8.7.0",
     "expo-linear-gradient": "~12.0.1",
@@ -47,11 +47,11 @@
     "react-native-ui-lib": "^6.29.0",
     "react-native-web": "~0.18.9",
     "react-native-webview": "11.23.1",
-    "react-test-renderer": "^18.2.0",
     "ts-jest": "^29.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@testing-library/react-native": "^12.0.0-rc.1",
     "@types/jest": "^29.4.0",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.70.6",
