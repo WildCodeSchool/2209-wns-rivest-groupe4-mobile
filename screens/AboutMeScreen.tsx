@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import AboutMeForm from '../features/AboutMeForm';
+import AboutMeForm from '../features/AboutMeForm/AboutMeForm';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function AboutMeScreen() {
