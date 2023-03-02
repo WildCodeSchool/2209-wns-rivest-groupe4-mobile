@@ -14,7 +14,11 @@
     "test:watch": "jest --watch"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "identity-obj-proxy"
+    }
   },
   "dependencies": {
     "@apollo/client": "^3.7.5",
@@ -22,6 +26,7 @@
     "@react-navigation/material-bottom-tabs": "^6.2.11",
     "@react-navigation/native": "^6.1.2",
     "@react-navigation/native-stack": "^6.9.8",
+    "@types/react-test-renderer": "^18.0.0",
     "expo": "~47.0.12",
     "expo-asset": "~8.7.0",
     "expo-linear-gradient": "~12.0.1",
@@ -42,6 +47,7 @@
     "react-native-ui-lib": "^6.29.0",
     "react-native-web": "~0.18.9",
     "react-native-webview": "11.23.1",
+    "react-test-renderer": "^18.2.0",
     "ts-jest": "^29.0.5"
   },
   "devDependencies": {

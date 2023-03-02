@@ -10,7 +10,10 @@ export default function AboutMeForm() {
           placeholder="John"
           placeholderTextColor="white"
         ></TextInput>
-        <Image style={styles.logoUser} source={require('../assets/user.png')} />
+        <Image
+          style={styles.logoUser}
+          source={require('../../assets/user.png')}
+        />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
@@ -20,7 +23,7 @@ export default function AboutMeForm() {
         ></TextInput>
         <Image
           style={styles.logoUserTag}
-          source={require('../assets/user-tag.png')}
+          source={require('../../assets/user-tag.png')}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -31,7 +34,7 @@ export default function AboutMeForm() {
           keyboardType="email-address"
           autoCapitalize="none"
         ></TextInput>
-        <Image style={styles.logoAt} source={require('../assets/at.png')} />
+        <Image style={styles.logoAt} source={require('../../assets/at.png')} />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
@@ -40,7 +43,10 @@ export default function AboutMeForm() {
           placeholderTextColor="white"
           autoCapitalize="none"
         ></TextInput>
-        <Image style={styles.logoLock} source={require('../assets/lock.png')} />
+        <Image
+          style={styles.logoLock}
+          source={require('../../assets/lock.png')}
+        />
       </View>
     </View>
   );
