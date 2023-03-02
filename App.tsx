@@ -1,4 +1,9 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import { BACKEND_PORT, BACKEND_URL } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthContext } from 'contexts/AuthContext';
@@ -22,10 +27,15 @@ type ReducerAction = {
 };
 
 // Initialize Apollo Client
-const client = new ApolloClient({
-  uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
-  cache: new InMemoryCache(),
-});
+console.log(BACKEND_URL, BACKEND_PORT);
+let client: ApolloClient<NormalizedCacheObject>;
+if (BACKEND_URL && BACKEND_PORT) {
+  client = new ApolloClient({
+    uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
+    cache: new InMemoryCache(),
+    connectToDevTools: true,
+  });
+}
 
 const initialState: ReducerState = {
   isLoading: true,
