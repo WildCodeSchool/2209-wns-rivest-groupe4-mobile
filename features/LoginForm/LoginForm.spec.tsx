@@ -44,15 +44,12 @@ const QUERY_REQUEST = {
 const MOCKS: Array<MockedResponse> = [QUERY_REQUEST];
 
 describe('LoginForm feature', () => {
-  const setup = (mocks?: Array<MockedResponse>) =>
+  it('should render components by default', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={MOCKS} addTypename={false}>
         <LoginForm />
       </MockedProvider>,
     );
-
-  it('should render components by default', async () => {
-    setup();
     expect(await screen.findByPlaceholderText('Password')).toBeDefined();
     expect(screen.getByPlaceholderText('Email')).toBeDefined();
     expect(screen.getByText('Login')).toBeDefined();
@@ -62,7 +59,11 @@ describe('LoginForm feature', () => {
   });
 
   it("should show validation errors if form isn't filled out properly", async () => {
-    setup();
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <LoginForm />
+      </MockedProvider>,
+    );
     await act(() => {
       fireEvent.changeText(screen.getByPlaceholderText('Email'), 'foo');
       fireEvent.press(screen.getByPlaceholderText('Password'));
@@ -76,7 +77,11 @@ describe('LoginForm feature', () => {
   });
 
   it('displays ActivityIndicator when query is executing', async () => {
-    setup(MOCKS);
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <LoginForm />
+      </MockedProvider>,
+    );
     await act(() => {
       fireEvent.changeText(
         screen.getByPlaceholderText('Email'),

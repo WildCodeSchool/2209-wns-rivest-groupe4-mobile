@@ -15,7 +15,9 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFiles": ["<rootDir>/jestSetup.js"],
+    "setupFiles": [
+      "<rootDir>/jestSetup.js"
+    ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "identity-obj-proxy"
@@ -35,7 +37,7 @@
     "expo-status-bar": "~1.4.2",
     "graphql": "^15.8.0",
     "jest-expo": "^48.0.1",
-    "react": "18.1.0",
+    "react": "^18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
     "react-native-dotenv": "^3.4.7",
@@ -51,7 +53,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@testing-library/react-native": "^12.0.0-rc.1",
+    "@testing-library/react-native": "^11.5.2",
     "@types/jest": "^29.4.0",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.70.6",
