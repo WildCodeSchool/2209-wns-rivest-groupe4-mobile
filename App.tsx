@@ -27,7 +27,6 @@ type ReducerAction = {
 };
 
 // Initialize Apollo Client
-console.log(BACKEND_URL, BACKEND_PORT);
 let client: ApolloClient<NormalizedCacheObject>;
 if (BACKEND_URL && BACKEND_PORT) {
   client = new ApolloClient({
