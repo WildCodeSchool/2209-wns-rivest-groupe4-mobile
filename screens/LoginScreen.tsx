@@ -13,7 +13,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-import LoginForm from '../features/LoginForm';
+import LoginForm from '../features/LoginForm/LoginForm';
 
 export default function LoginScreen() {
   const windowHeight = useWindowDimensions().height;

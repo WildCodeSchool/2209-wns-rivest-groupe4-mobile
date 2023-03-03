@@ -1,35 +1,52 @@
 import { Image, StyleSheet, TextInput, View } from 'react-native';
 import React from 'react';
 
-export default function ContactForm() {
+export default function AboutMeForm() {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Enter your name"
+          placeholder="John"
           placeholderTextColor="white"
         ></TextInput>
-        <Image style={styles.logoUser} source={require('../assets/user.png')} />
+        <Image
+          style={styles.logoUser}
+          source={require('../../assets/user.png')}
+        />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Enter your mail"
+          placeholder="JohnDoe123"
+          placeholderTextColor="white"
+        ></TextInput>
+        <Image
+          style={styles.logoUserTag}
+          source={require('../../assets/user-tag.png')}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="john@doe.com"
           placeholderTextColor="white"
           keyboardType="email-address"
           autoCapitalize="none"
         ></TextInput>
-        <Image style={styles.logoAt} source={require('../assets/at.png')} />
+        <Image style={styles.logoAt} source={require('../../assets/at.png')} />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          editable
-          multiline
-          placeholder="Explain your problem"
+          placeholder="*************"
           placeholderTextColor="white"
+          autoCapitalize="none"
         ></TextInput>
+        <Image
+          style={styles.logoLock}
+          source={require('../../assets/lock.png')}
+        />
       </View>
     </View>
   );
@@ -61,6 +78,20 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   logoUser: {
+    width: 20,
+    height: 23,
+    position: 'absolute',
+    right: 0,
+    color: 'white',
+  },
+  logoUserTag: {
+    width: 25,
+    height: 20,
+    position: 'absolute',
+    right: 0,
+    color: 'white',
+  },
+  logoLock: {
     width: 20,
     height: 23,
     position: 'absolute',

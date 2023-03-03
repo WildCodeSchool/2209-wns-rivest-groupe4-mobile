@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import BottomNav from 'features/BottomNav';
+import BottomNav from 'features/BottomNav/BottomNav';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import AboutMeScreen from 'screens/AboutMeScreen';

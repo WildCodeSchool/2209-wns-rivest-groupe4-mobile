@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import React from 'react';
-import ContactForm from '../features/ContactForm';
+import ContactForm from '../features/ContactForm/ContactForm';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ContactScreen() {
