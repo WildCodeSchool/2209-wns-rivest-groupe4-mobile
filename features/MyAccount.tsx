@@ -1,12 +1,40 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { UserContext } from 'contexts/UserContext';
+import { useQuery } from '@apollo/client';
+import { GET_USER_COMMENTS, GET_USER_LIKES } from 'apollo/queries';
+import ILike from 'interfaces/ILike';
+import IComment from 'interfaces/IComment';
 
 export default function MyAccount() {
-  //faire un apelle a la bdd pour savoir le nombre de run + nombre de like
-  const [count, setCount] = useState(0);
-  const [like, setLike] = useState(0);
-  const [comment, setComment] = useState(0);
-  const [isPremium, setIsPremium] = useState(true);
+  const { user, token } = useContext(UserContext);
+  const [likes, setLikes] = useState<number>(0);
+  const [comments, setComments] = useState<number>(0);
+  const [isPremium, setIsPremium] = useState<boolean>(
+    user ? user.premium : false,
+  );
+
+  useQuery(GET_USER_LIKES, {
+    context: {
+      headers: {
+        authorization: token,
+      },
+    },
+    onCompleted(data: { getAllLikesByUser: ILike[] }) {
+      setLikes(data.getAllLikesByUser.length);
+    },
+  });
+
+  useQuery(GET_USER_COMMENTS, {
+    context: {
+      headers: {
+        authorization: token,
+      },
+    },
+    onCompleted(data: { getAllCommentsByUser: IComment[] }) {
+      setComments(data.getAllCommentsByUser.length);
+    },
+  });
 
   return (
     <View style={styles.mainContainer}>
@@ -20,8 +48,7 @@ export default function MyAccount() {
             fontWeight: 'bold',
           }}
         >
-          {' '}
-          • Premium Account{' '}
+          • Premium Account
         </Text>
       ) : (
         <Text
@@ -33,59 +60,58 @@ export default function MyAccount() {
             fontWeight: 'bold',
           }}
         >
-          {' '}
-          • Free Account{' '}
+          • Free Account
         </Text>
       )}
-      <Text style={styles.text}> Number of runs this month :</Text>
+      <Text style={styles.text}>Number of runs this month :</Text>
       <View style={styles.row}>
         <View style={styles.counter}>
-          {isPremium ? (
+          {/* {isPremium ? (
             <Text style={styles.counter}> {count} / ∞</Text>
           ) : (
             <Text style={styles.counter}> {count} / 50</Text>
-          )}
+          )} */}
         </View>
         <View
           style={{
             backgroundColor: '#f1672c',
-            width: isPremium ? `100%` : `${count * 2}%`,
+            // width: isPremium ? `100%` : `${count * 2}%`,
             borderRadius: 5,
             height: 30,
           }}
         />
       </View>
-      <Text style={styles.text}> Number of likes this month :</Text>
+      <Text style={styles.text}>Number of likes this month :</Text>
       <View style={styles.row}>
         <View style={styles.counter}>
           {isPremium ? (
-            <Text style={styles.counter}> {like} / ∞</Text>
+            <Text style={styles.counter}> {likes} / ∞</Text>
           ) : (
-            <Text style={styles.counter}> {like} / 5</Text>
+            <Text style={styles.counter}> {likes} / 5</Text>
           )}
         </View>
         <View
           style={{
             backgroundColor: '#f1bf25',
-            width: isPremium ? `100%` : `${like * 20}%`,
+            width: isPremium ? `100%` : `${likes * 20}%`,
             borderRadius: 5,
             height: 30,
           }}
         />
       </View>
-      <Text style={styles.text}> Number commentaries this month :</Text>
+      <Text style={styles.text}>Number commentaries this month :</Text>
       <View style={styles.row}>
         <View style={styles.counter}>
           {isPremium ? (
-            <Text style={styles.counter}> {comment} / ∞</Text>
+            <Text style={styles.counter}> {comments} / ∞</Text>
           ) : (
-            <Text style={styles.counter}> {comment} / 5</Text>
+            <Text style={styles.counter}> {comments} / 5</Text>
           )}
         </View>
         <View
           style={{
             backgroundColor: '#3178c6',
-            width: isPremium ? `100%` : `${comment * 20}%`,
+            width: isPremium ? `100%` : `${comments * 20}%`,
             borderRadius: 5,
             height: 30,
           }}
@@ -98,53 +124,7 @@ export default function MyAccount() {
           justifyContent: 'center',
           marginTop: 30,
         }}
-      >
-        <Button
-          title="Run"
-          onPress={() => {
-            if (isPremium == true) {
-              setCount(count + 1);
-            } else if (count >= 50) {
-              //faire une modale
-              setCount(0);
-              alert(`vous avez éffectuer vos ${count} run aujourd'hui `);
-            } else setCount(count + 1);
-          }}
-        />
-        <Button
-          title="like"
-          onPress={() => {
-            if (isPremium == true) {
-              setLike(like + 1);
-            } else if (like >= 5) {
-              //faire une modale
-              setLike(0);
-              alert(`vous avez éffectuer vos ${like} like aujourd'hui `);
-            } else setLike(like + 1);
-          }}
-        />
-        <Button
-          title="comment"
-          onPress={() => {
-            if (isPremium == true) {
-              setComment(comment + 1);
-            } else if (comment >= 5) {
-              //faire une modale
-              setComment(0);
-              alert(
-                `vous avez éffectuer vos ${comment} commentaire aujourd'hui `,
-              );
-            } else setComment(comment + 1);
-          }}
-        />
-        <Button
-          title="premium"
-          onPress={() => {
-            if (isPremium == false) setIsPremium(true);
-            else setIsPremium(false);
-          }}
-        />
-      </View>
+      ></View>
     </View>
   );
 }

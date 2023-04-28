@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { UserContext } from 'contexts/UserContext';
 import BottomNav from 'features/BottomNav/BottomNav';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import AboutMeScreen from 'screens/AboutMeScreen';
 import ContactScreen from 'screens/ContactScreen';
