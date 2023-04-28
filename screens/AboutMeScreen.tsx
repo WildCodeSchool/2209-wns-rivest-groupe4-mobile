@@ -18,14 +18,14 @@ export default function AboutMeScreen() {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <ScrollView>
+      <ScrollView style={styles.container}>
         <KeyboardAvoidingView>
-          <View style={styles.container}>
+          <View>
             <Image
               style={styles.return}
               source={require('../assets/arrow-left-solid.png')}
             />
-            <Text style={styles.title}>Modify my information </Text>
+            <Text style={styles.title}>Modify my informations</Text>
             <AboutMeForm />
           </View>
         </KeyboardAvoidingView>
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
   },
   return: {
     position: 'absolute',

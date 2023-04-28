@@ -28,7 +28,7 @@ type ReducerAction = {
 
 // Initialize Apollo Client
 let client: ApolloClient<NormalizedCacheObject>;
-if (BACKEND_URL && BACKEND_PORT) {
+if (BACKEND_URL !== undefined && BACKEND_PORT !== undefined) {
   client = new ApolloClient({
     uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
     cache: new InMemoryCache(),
@@ -70,6 +70,7 @@ export default function App() {
 
   const [authState, dispatch] = React.useReducer(reducer, initialState);
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   React.useEffect(() => {
     (async () => {
@@ -84,6 +85,7 @@ export default function App() {
       if (user && userToken) {
         dispatch({ type: 'RESTORE_TOKEN', token: userToken });
         setUser(JSON.parse(user));
+        setToken(userToken);
       }
     })();
   }, []);
@@ -115,7 +117,7 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <AuthContext.Provider value={authContext}>
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, token, setToken }}>
           <NavigationContainer>
             {authState.userToken == null ? <AuthStack /> : <HomeStack />}
           </NavigationContainer>

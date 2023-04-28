@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProjectScreen from '../../screens/ProjectScreen';
 import Settings from '../Settings';
 import EditorScreen from '../../screens/EditorScreen';
+import BestSharesScreen from 'screens/BestSharesScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,7 @@ export default function BottomNav() {
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-
+        animationEnabled: false,
         tabBarStyle: { backgroundColor: '#1d2448' },
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'lightgrey',
@@ -32,9 +33,9 @@ export default function BottomNav() {
     >
       <Tab.Screen
         name="Best"
-        component={EditorScreen}
+        component={BestSharesScreen}
         options={{
-          title: 'Best Share',
+          title: 'Best Shares',
           headerStyle: {
             backgroundColor: '#1d2448',
           },
@@ -64,6 +65,12 @@ export default function BottomNav() {
         options={{
           headerShown: false,
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (event) => {
+            event.preventDefault();
+            navigation.navigate('Settings');
+          },
+        })}
       />
     </Tab.Navigator>
   );
