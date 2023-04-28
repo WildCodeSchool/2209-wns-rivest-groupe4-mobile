@@ -1,14 +1,19 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { Button } from 'react-native-ui-lib';
+import IProjectsListing from 'interfaces/IProjectsListing';
+import GradientButton from 'components/GradientButton';
 
-export default function ProjectSupport() {
+type Props = {
+  project: IProjectsListing;
+};
+
+export default function ProjectSupported({ project }: Props) {
   return (
     <View style={styles.mainContainer}>
       <View>
         <View style={styles.row}>
-          <Text style={styles.title}>Get Winners :</Text>
-          <Text style={styles.by}>by TheHackerman </Text>
+          <Text style={styles.title}>{project.name}</Text>
+          <Text style={styles.by}>by {project.user.pseudo}</Text>
         </View>
         <View style={styles.content}>
           <Image
@@ -16,16 +21,27 @@ export default function ProjectSupport() {
             source={require('../assets/projectSupport.png')}
           />
           <View style={styles.row}>
-            <Text style={styles.text}>16/01/2023 at 10:26</Text>
+            <Text style={styles.text}>{`${project.updatedAt
+              .toString()
+              .split('T')[0]
+              .split('-')
+              .reverse()
+              .join('/')} at ${
+              project.updatedAt.toString().split('T')[1].split('.')[0]
+            }`}</Text>
             <View style={styles.textLogo}>
-              <Text style={{ marginRight: 10, color: 'white' }}>328</Text>
+              <Text style={{ marginRight: 10, color: 'white' }}>
+                {project.likes.length}
+              </Text>
               <Image
                 style={styles.logo}
-                source={require('../assets/heart.png')}
+                source={require('../assets/heart-solid-red.png')}
               />
             </View>
             <View style={styles.textLogo}>
-              <Text style={{ marginRight: 10, color: 'white' }}>152</Text>
+              <Text style={{ marginRight: 10, color: 'white' }}>
+                {project.comments.length}
+              </Text>
               <Image
                 style={styles.logo}
                 source={require('../assets/speech-bubble.png')}
@@ -33,15 +49,11 @@ export default function ProjectSupport() {
             </View>
           </View>
           <Text style={styles.language}>JavaScript</Text>
-          <Text style={styles.text}>
-            Simple project which allows you to get number of days for a month.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-            risus.
-          </Text>
+          <Text style={styles.text}>{project.description.length}</Text>
           <View style={styles.rowButton}>
-            <Button style={styles.access}>
-              <Text style={styles.access}>Access the project</Text>
-            </Button>
+            <GradientButton onPress={() => {}} gradient={'cyanToBlue'}>
+              Access the project
+            </GradientButton>
           </View>
         </View>
       </View>

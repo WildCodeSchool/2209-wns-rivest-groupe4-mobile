@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 //To add gradient style
 //Add your style name in Gradient Type
-type Gradient = 'cyanToBlue' | 'redToYellow';
+type Gradient = 'cyanToBlue' | 'redToYellow' | 'greenToBlue';
 type ColorPalette = { [key: string]: [string, string] };
 
 type Props = {
@@ -17,6 +17,7 @@ type Props = {
 const possibleGradient: ColorPalette = {
   cyanToBlue: ['#06b6d4', '#3f83f8'],
   redToYellow: ['#F05252', '#FCE96A'],
+  greenToBlue: ['#00D40E', '#00BA2D'],
 };
 
 export default function GradientButton({ onPress, children, gradient }: Props) {
