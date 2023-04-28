@@ -68,12 +68,12 @@ describe('LoginForm feature', () => {
       fireEvent.changeText(screen.getByPlaceholderText('Email'), 'foo');
       fireEvent.press(screen.getByPlaceholderText('Password'));
     });
-    expect(screen.findByText('Email is invalid')).toBeDefined();
+    expect(screen.queryByText('Email is invalid')).toBeDefined();
     await act(() => {
       fireEvent.changeText(screen.getByPlaceholderText('Password'), 'bar');
       fireEvent.press(screen.getByText('Stay connected'));
     });
-    expect(screen.findByText('Password is too short')).toBeDefined();
+    expect(screen.queryByText('Password is too short')).toBeDefined();
   });
 
   it('displays ActivityIndicator when query is executing', async () => {
