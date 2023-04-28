@@ -1,8 +1,19 @@
-import ContactForm from './ContactForm';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+import ContactForm, { SEND_MAIL } from './ContactForm';
 import { render, screen } from '@testing-library/react-native';
 
+const mocks: Array<MockedResponse> = [
+  { request: { query: SEND_MAIL }, result: { data: {} } },
+];
+
 describe('ContactForm feature', () => {
-  const setup = () => render(<ContactForm />);
+  const setup = () =>
+    render(
+      <MockedProvider mocks={mocks}>
+        <ContactForm />
+      </MockedProvider>,
+    );
+
   it('should render components by default', async () => {
     setup();
     expect(screen.getByPlaceholderText('Enter your name')).toBeDefined();
