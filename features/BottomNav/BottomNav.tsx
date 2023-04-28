@@ -19,7 +19,7 @@ export default function BottomNav() {
           } else if (route.name === 'Project') {
             iconName = focused ? 'person-outline' : 'person';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'md-settings-sharp' : 'md-settings-sharp';
+            iconName = focused ? 'md-settings-outline' : 'md-settings-sharp';
           }
 
           // You can return any component that you like here!
@@ -64,7 +64,6 @@ export default function BottomNav() {
         component={Settings}
         options={{
           headerShown: false,
-          unmountOnBlur: true,
         }}
         listeners={({ navigation }) => ({
           tabPress: (event) => {

@@ -1,102 +1,83 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from 'contexts/AuthContext';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Settings() {
-  const [isModalVisible, setModalVisible] = useState(true);
-
   const { signOut } = React.useContext(AuthContext);
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
   const navigation = useNavigation<any>();
 
   return (
-    <View style={styles.flexView}>
-      <Modal
-        onBackdropPress={() => setModalVisible(false)}
-        onBackButtonPress={() => setModalVisible(false)}
-        isVisible={isModalVisible}
-        swipeDirection="down"
-        onSwipeComplete={toggleModal}
-        animationIn="bounceInUp"
-        animationOut="bounceOutDown"
-        animationInTiming={900}
-        animationOutTiming={500}
-        backdropTransitionInTiming={1000}
-        backdropTransitionOutTiming={500}
-        style={styles.modal}
-      >
-        <View style={styles.modalContent}>
-          <View style={styles.center}>
-            <View style={styles.barIcon} />
-            <TouchableHighlight
-              onPress={() => navigation.navigate({ name: 'About' })}
-              style={styles.btnClickContain}
-              underlayColor="none"
-            >
-              <View style={styles.btnContainer}>
-                <Text style={styles.text}>About me</Text>
-                <Icon
-                  name="person-outline"
-                  size={35}
-                  color="#FFFFFF"
-                  style={styles.icon}
-                />
-              </View>
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={() => navigation.navigate({ name: 'Contact' })}
-              style={styles.btnClickContain}
-              underlayColor="none"
-            >
-              <View style={styles.btnContainer}>
-                <Text style={styles.text}>Contact us</Text>
-                <Icon
-                  name="mail-outline"
-                  size={35}
-                  color="#FFFFFF"
-                  style={styles.icon}
-                />
-              </View>
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={() => signOut()}
-              style={styles.btnClickContain}
-              underlayColor="none"
-            >
-              <View style={styles.btnContainer}>
-                <Text style={styles.text}>Logout</Text>
-                <Icon
-                  name="log-out-outline"
-                  size={35}
-                  color="#FFFFFF"
-                  style={styles.icon}
-                />
-              </View>
-            </TouchableHighlight>
-          </View>
+    <LinearGradient
+      colors={['#1d2448', '#131d2f']}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.flexView}
+    >
+      <View style={styles.modalContent}>
+        <View style={styles.center}>
+          <TouchableHighlight
+            onPress={() => navigation.navigate({ name: 'About' })}
+            style={styles.btnClickContain}
+            underlayColor="none"
+          >
+            <View style={styles.btnContainer}>
+              <Text style={styles.text}>About me</Text>
+              <Icon
+                name="person-outline"
+                size={35}
+                color="#FFFFFF"
+                style={styles.icon}
+              />
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => navigation.navigate({ name: 'Contact' })}
+            style={styles.btnClickContain}
+            underlayColor="none"
+          >
+            <View style={styles.btnContainer}>
+              <Text style={styles.text}>Contact us</Text>
+              <Icon
+                name="mail-outline"
+                size={35}
+                color="#FFFFFF"
+                style={styles.icon}
+              />
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => signOut()}
+            style={styles.btnClickContain}
+            underlayColor="none"
+          >
+            <View style={styles.btnContainer}>
+              <Text style={styles.text}>Logout</Text>
+              <Icon
+                name="log-out-outline"
+                size={35}
+                color="#FFFFFF"
+                style={styles.icon}
+              />
+            </View>
+          </TouchableHighlight>
         </View>
-      </Modal>
-    </View>
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   flexView: {
+    width: '100%',
+    padding: 0,
     flex: 1,
-    backgroundColor: 'white',
-  },
-  modal: {
-    justifyContent: 'flex-end',
-    margin: 0,
+    backgroundColor: '#1d2448',
   },
   modalContent: {
-    backgroundColor: '#1d2448',
     paddingTop: 12,
     paddingHorizontal: 12,
     borderTopRightRadius: 20,
@@ -108,12 +89,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  barIcon: {
-    width: 60,
-    height: 5,
-    backgroundColor: '#bbb',
-    borderRadius: 3,
   },
   text: {
     flexDirection: 'row',
