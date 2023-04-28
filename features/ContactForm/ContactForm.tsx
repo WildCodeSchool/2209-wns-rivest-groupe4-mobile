@@ -1,6 +1,6 @@
 import { gql, useLazyQuery } from '@apollo/client';
 import GradientButton from 'components/GradientButton';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { TextInput, View, Image, StyleSheet, Text } from 'react-native';
 
@@ -10,7 +10,7 @@ type FormValues = {
   reason: string;
 };
 
-const SEND_MAIL = gql`
+export const SEND_MAIL = gql`
   query Query($name: String!, $email: String!, $reason: String!) {
     SendMail(name: $name, email: $email, reason: $reason)
   }
@@ -18,7 +18,7 @@ const SEND_MAIL = gql`
 const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 export default function ContactForm() {
-  const [statusModification, setStatusModification] = React.useState('');
+  const [statusModification, setStatusModification] = useState('');
 
   const [mail] = useLazyQuery(SEND_MAIL, {
     onError: () => {
