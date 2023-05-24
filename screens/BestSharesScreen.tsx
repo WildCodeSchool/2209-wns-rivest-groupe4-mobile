@@ -9,24 +9,22 @@ import { GET_SHARED_PROJECTS } from 'apollo/queries';
 import ProjectSupported from 'features/ProjectsSupported';
 
 export default function BestSharesScreen() {
-  const { user, token } = useContext(UserContext);
-  const [projectsShared, setprojectsShared] = useState<IProjectsListing[]>([]);
+  const { token } = useContext(UserContext);
 
-  const { loading } = useQuery(GET_SHARED_PROJECTS, {
+  const { loading, data, error } = useQuery(GET_SHARED_PROJECTS, {
     context: {
       headers: {
         authorization: token,
       },
     },
-    onCompleted(data: { getSharedProjects: IProjectsListing[] }) {
-      if (data) {
-        setprojectsShared(data.getSharedProjects);
-      }
-    },
   });
 
   if (loading) {
     return <Text>Loading</Text>;
+  }
+
+  if (error) {
+    return <Text>{error.message}</Text>;
   }
 
   return (
@@ -39,11 +37,11 @@ export default function BestSharesScreen() {
       <ScrollView style={styles.container}>
         <View style={{ alignItems: 'center' }}>
           <Text style={styles.title}>Best Shares</Text>
-          {projectsShared && projectsShared.length === 0 ? (
+          {data && data.getSharedProjects.length === 0 ? (
             <Text style={styles.text}>No project yet</Text>
           ) : (
-            projectsShared &&
-            projectsShared.map((project) => (
+            data &&
+            data.getSharedProjects.map((project: IProjectsListing) => (
               <ProjectSupported key={project.id} project={project} />
             ))
           )}

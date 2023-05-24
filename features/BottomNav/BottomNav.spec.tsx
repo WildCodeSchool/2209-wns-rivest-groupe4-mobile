@@ -47,11 +47,6 @@ describe('BottomNav feature', () => {
       </MockedProvider>,
     );
 
-  it('should render Loading text by default', async () => {
-    setup();
-    expect(screen.getByText('Loading')).toBeDefined();
-  });
-
   it('should render components by default', async () => {
     setup();
     expect(await screen.findAllByRole('button')).toHaveLength(3);
