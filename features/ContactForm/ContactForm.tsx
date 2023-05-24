@@ -15,7 +15,6 @@ export const SEND_MAIL = gql`
     SendMail(name: $name, email: $email, reason: $reason)
   }
 `;
-const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 export default function ContactForm() {
   const [statusModification, setStatusModification] = useState('');
@@ -82,7 +81,7 @@ export default function ContactForm() {
               placeholderTextColor="white"
               keyboardType="email-address"
               onBlur={onBlur}
-              onChangeText={(value) => onChange(reg.test(value))}
+              onChangeText={(value) => onChange(value)}
               value={value}
             />
           )}
