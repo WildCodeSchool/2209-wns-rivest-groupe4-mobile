@@ -1,5 +1,11 @@
 import LoginForm from './LoginForm';
-import { render, screen, fireEvent, act } from '@testing-library/react-native';
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+} from '@testing-library/react-native';
 import React from 'react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { gql } from '@apollo/client';
@@ -66,11 +72,15 @@ describe('LoginForm feature', () => {
     );
     await act(() => {
       fireEvent.changeText(screen.getByPlaceholderText('Email'), 'foo');
+    });
+    await act(() => {
       fireEvent.press(screen.getByPlaceholderText('Password'));
     });
     expect(screen.queryByText('Email is invalid')).toBeDefined();
     await act(() => {
       fireEvent.changeText(screen.getByPlaceholderText('Password'), 'bar');
+    });
+    await act(() => {
       fireEvent.press(screen.getByText('Stay connected'));
     });
     expect(screen.queryByText('Password is too short')).toBeDefined();
@@ -82,17 +92,24 @@ describe('LoginForm feature', () => {
         <LoginForm />
       </MockedProvider>,
     );
-    await act(() => {
+    await waitFor(() => {
       fireEvent.changeText(
         screen.getByPlaceholderText('Email'),
         'foo.bar@gmail.com',
       );
+    });
+
+    await waitFor(() => {
       fireEvent.changeText(
         screen.getByPlaceholderText('Password'),
         'FooBar123!',
       );
     });
-    fireEvent.press(screen.getByText('LOGIN'));
+
+    await waitFor(() => {
+      fireEvent.press(screen.getByText('LOGIN'));
+    });
+
     expect(screen.queryByTestId('loader')).not.toBeNull();
   });
 });

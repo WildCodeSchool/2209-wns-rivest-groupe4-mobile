@@ -16,8 +16,10 @@ describe('ContactForm feature', () => {
 
   it('should render components by default', async () => {
     setup();
-    expect(screen.getByPlaceholderText('Enter your name')).toBeDefined();
-    expect(screen.getByPlaceholderText('Enter your mail')).toBeDefined();
-    expect(screen.getByPlaceholderText('Explain your problem')).toBeDefined();
+    expect(await screen.getByPlaceholderText('Enter your name')).toBeDefined();
+    expect(await screen.getByPlaceholderText('Enter your mail')).toBeDefined();
+    expect(
+      await screen.getByPlaceholderText('Explain your problem'),
+    ).toBeDefined();
   });
 });
