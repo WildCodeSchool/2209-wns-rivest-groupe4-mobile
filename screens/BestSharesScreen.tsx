@@ -10,18 +10,24 @@ import ProjectSupported from 'features/ProjectsSupported';
 
 export default function BestSharesScreen() {
   const { user, token } = useContext(UserContext);
-  const [projectsShared, setprojectsShared] = useState<IProjectsListing[]>();
+  const [projectsShared, setprojectsShared] = useState<IProjectsListing[]>([]);
 
-  useQuery(GET_SHARED_PROJECTS, {
+  const { loading } = useQuery(GET_SHARED_PROJECTS, {
     context: {
       headers: {
         authorization: token,
       },
     },
     onCompleted(data: { getSharedProjects: IProjectsListing[] }) {
-      setprojectsShared(data.getSharedProjects);
+      if (data) {
+        setprojectsShared(data.getSharedProjects);
+      }
     },
   });
+
+  if (loading) {
+    return <Text>Loading</Text>;
+  }
 
   return (
     <LinearGradient
@@ -33,11 +39,13 @@ export default function BestSharesScreen() {
       <ScrollView style={styles.container}>
         <View style={{ alignItems: 'center' }}>
           <Text style={styles.title}>Best Shares</Text>
-          {projectsShared?.map((project) => (
-            <ProjectSupported key={project.id} project={project} />
-          ))}
-          {projectsShared?.length === 0 && (
+          {projectsShared && projectsShared.length === 0 ? (
             <Text style={styles.text}>No project yet</Text>
+          ) : (
+            projectsShared &&
+            projectsShared.map((project) => (
+              <ProjectSupported key={project.id} project={project} />
+            ))
           )}
         </View>
       </ScrollView>
