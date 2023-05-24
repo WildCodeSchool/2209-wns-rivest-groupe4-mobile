@@ -9,27 +9,29 @@ const mocks: Array<MockedResponse> = [
     request: { query: GET_SHARED_PROJECTS },
     result: {
       data: {
-        getSharedProjects: {
-          id: '',
-          name: '',
-          description: '',
-          updatedAt: '',
-          isPublic: null,
-          comments: {
-            id: null,
-          },
-          user: {
-            id: null,
-            pseudo: '',
-            premium: null,
-          },
-          likes: {
+        getSharedProjects: [
+          {
+            id: '',
+            name: '',
+            description: '',
+            updatedAt: '',
+            isPublic: null,
+            comments: {
+              id: null,
+            },
             user: {
               id: null,
               pseudo: '',
+              premium: null,
+            },
+            likes: {
+              user: {
+                id: null,
+                pseudo: '',
+              },
             },
           },
-        },
+        ],
       },
     },
   },
