@@ -33,11 +33,13 @@ export default function BestSharesScreen() {
       <ScrollView style={styles.container}>
         <View style={{ alignItems: 'center' }}>
           <Text style={styles.title}>Best Shares</Text>
-          {projectsShared?.map((project) => (
-            <ProjectSupported key={project.id} project={project} />
-          ))}
-          {projectsShared?.length === 0 && (
+          {projectsShared && projectsShared.length === 0 ? (
             <Text style={styles.text}>No project yet</Text>
+          ) : (
+            projectsShared &&
+            projectsShared.map((project) => (
+              <ProjectSupported key={project.id} project={project} />
+            ))
           )}
         </View>
       </ScrollView>
