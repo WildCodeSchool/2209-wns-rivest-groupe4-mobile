@@ -21,6 +21,9 @@ export default function BestSharesScreen() {
     onCompleted(data: { getSharedProjects: IProjectsListing[] }) {
       setprojectsShared(data.getSharedProjects);
     },
+    onError(err) {
+      console.log('ERROR', err);
+    },
   });
 
   return (
