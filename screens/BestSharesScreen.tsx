@@ -10,7 +10,7 @@ import ProjectSupported from 'features/ProjectsSupported';
 
 export default function BestSharesScreen() {
   const { user, token } = useContext(UserContext);
-  const [projectsShared, setprojectsShared] = useState<IProjectsListing[]>();
+  const [projectsShared, setprojectsShared] = useState<IProjectsListing[]>([]);
 
   useQuery(GET_SHARED_PROJECTS, {
     context: {
@@ -19,10 +19,9 @@ export default function BestSharesScreen() {
       },
     },
     onCompleted(data: { getSharedProjects: IProjectsListing[] }) {
-      setprojectsShared(data.getSharedProjects);
-    },
-    onError(err) {
-      console.log('ERROR', err);
+      if (data) {
+        setprojectsShared(data.getSharedProjects);
+      }
     },
   });
 
