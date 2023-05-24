@@ -12,7 +12,7 @@ export default function BestSharesScreen() {
   const { user, token } = useContext(UserContext);
   const [projectsShared, setprojectsShared] = useState<IProjectsListing[]>([]);
 
-  useQuery(GET_SHARED_PROJECTS, {
+  const { loading } = useQuery(GET_SHARED_PROJECTS, {
     context: {
       headers: {
         authorization: token,
@@ -24,6 +24,10 @@ export default function BestSharesScreen() {
       }
     },
   });
+
+  if (loading) {
+    return <Text>Loading</Text>;
+  }
 
   return (
     <LinearGradient
