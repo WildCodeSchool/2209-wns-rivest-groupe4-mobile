@@ -10,20 +10,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Checkbox, LoaderScreen } from 'react-native-ui-lib';
 import { TextField } from 'react-native-ui-lib/src/incubator';
 import { AuthStackNavigatorParamList } from 'stacks/AuthStack';
-
-const GET_TOKEN = gql`
-  query GetTokenWithUser($password: String!, $email: String!) {
-    getTokenWithUser(password: $password, email: $email) {
-      token
-      user {
-        id
-        email
-        pseudo
-        premium
-      }
-    }
-  }
-`;
+import { GET_TOKEN } from 'apollo/queries';
 
 export default function LoginForm() {
   const { navigate } =
@@ -35,24 +22,21 @@ export default function LoginForm() {
   const [remember, setRemember] = useState(false);
 
   const { signIn } = React.useContext(AuthContext);
-  const { setUser } = useContext(UserContext);
+  const { setUser, setToken } = useContext(UserContext);
 
   const [login, { loading, error }] = useLazyQuery(GET_TOKEN, {
     onCompleted: async (data) => {
-      if (remember) {
-        await SecureStore.setItemAsync(
-          'authToken',
-          data.getTokenWithUser.token,
-        );
-        await SecureStore.setItemAsync(
-          'user',
-          JSON.stringify(data.getTokenWithUser.user),
-        );
-      }
-      setUser(data.user);
+      await SecureStore.setItemAsync('authToken', data.getTokenWithUser.token);
+      await SecureStore.setItemAsync(
+        'user',
+        JSON.stringify(data.getTokenWithUser.user),
+      );
+      setToken(data.getTokenWithUser.token);
+      setUser(data.getTokenWithUser.user);
       signIn(data.getTokenWithUser.token);
     },
     onError(error) {
+      console.error(error);
       alert(error.message);
     },
   });
@@ -61,7 +45,7 @@ export default function LoginForm() {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       {loading ? (
-        <LoaderScreen color={'#fff'} />
+        <LoaderScreen testID="loader" color={'#fff'} />
       ) : (
         <>
           <View>
@@ -117,6 +101,7 @@ export default function LoginForm() {
             </TouchableOpacity>
           </View>
           <GradientButton
+            data-testId="login-button"
             gradient="cyanToBlue"
             onPress={() => {
               login({

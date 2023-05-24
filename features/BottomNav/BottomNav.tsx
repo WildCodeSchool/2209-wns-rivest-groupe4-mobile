@@ -1,8 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import ProjectScreen from '../screens/ProjectScreen';
-import Settings from '../features/Settings';
-import EditorScreen from '../screens/EditorScreen';
+import ProjectScreen from '../../screens/ProjectScreen';
+import Settings from '../Settings';
+import EditorScreen from '../../screens/EditorScreen';
+import BestSharesScreen from 'screens/BestSharesScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,13 +19,13 @@ export default function BottomNav() {
           } else if (route.name === 'Project') {
             iconName = focused ? 'person-outline' : 'person';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'md-settings-sharp' : 'md-settings-sharp';
+            iconName = focused ? 'md-settings-outline' : 'md-settings-sharp';
           }
 
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-
+        animationEnabled: false,
         tabBarStyle: { backgroundColor: '#1d2448' },
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'lightgrey',
@@ -32,9 +33,9 @@ export default function BottomNav() {
     >
       <Tab.Screen
         name="Best"
-        component={EditorScreen}
+        component={BestSharesScreen}
         options={{
-          title: 'Best Share',
+          title: 'Best Shares',
           headerStyle: {
             backgroundColor: '#1d2448',
           },
@@ -63,8 +64,13 @@ export default function BottomNav() {
         component={Settings}
         options={{
           headerShown: false,
-          unmountOnBlur: true,
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (event) => {
+            event.preventDefault();
+            navigation.navigate('Settings');
+          },
+        })}
       />
     </Tab.Navigator>
   );

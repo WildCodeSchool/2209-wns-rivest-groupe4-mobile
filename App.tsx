@@ -1,4 +1,9 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import { BACKEND_PORT, BACKEND_URL } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthContext } from 'contexts/AuthContext';
@@ -10,12 +15,6 @@ import AuthStack from 'stacks/AuthStack';
 import HomeStack from 'stacks/HomeStack';
 import fonts from './assets/fonts/fonts';
 
-// Initialize Apollo Client
-const client = new ApolloClient({
-  uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
-  cache: new InMemoryCache(),
-});
-
 type ReducerState = {
   isLoading: boolean;
   isSignout: boolean;
@@ -26,6 +25,16 @@ type ReducerAction = {
   type: 'RESTORE_TOKEN' | 'SIGN_IN' | 'SIGN_OUT';
   token: string | null | undefined;
 };
+
+// Initialize Apollo Client
+let client: ApolloClient<NormalizedCacheObject>;
+if (BACKEND_URL !== undefined && BACKEND_PORT !== undefined) {
+  client = new ApolloClient({
+    uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
+    cache: new InMemoryCache(),
+    connectToDevTools: true,
+  });
+}
 
 const initialState: ReducerState = {
   isLoading: true,
@@ -61,6 +70,7 @@ export default function App() {
 
   const [authState, dispatch] = React.useReducer(reducer, initialState);
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   React.useEffect(() => {
     (async () => {
@@ -75,6 +85,7 @@ export default function App() {
       if (user && userToken) {
         dispatch({ type: 'RESTORE_TOKEN', token: userToken });
         setUser(JSON.parse(user));
+        setToken(userToken);
       }
     })();
   }, []);
@@ -106,7 +117,7 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <AuthContext.Provider value={authContext}>
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, token, setToken }}>
           <NavigationContainer>
             {authState.userToken == null ? <AuthStack /> : <HomeStack />}
           </NavigationContainer>

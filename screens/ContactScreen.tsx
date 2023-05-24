@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import React from 'react';
-import ContactForm from '../features/ContactForm';
+import ContactForm from '../features/ContactForm/ContactForm';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ContactScreen() {
@@ -20,7 +20,7 @@ export default function ContactScreen() {
     >
       <ScrollView>
         <KeyboardAvoidingView>
-          <View style={styles.container}>
+          <View>
             <Image
               style={styles.return}
               source={require('../assets/arrow-left-solid.png')}
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: 'white',
     marginTop: 80,
-    marginBottom: 120,
+    marginBottom: 50,
     textAlign: 'center',
   },
   container: {
