@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/client';
 import { GET_USER_COMMENTS, GET_USER_LIKES } from 'apollo/queries';
 import ILike from 'interfaces/ILike';
 import IComment from 'interfaces/IComment';
+import GradientButton from 'components/GradientButton';
 
 export default function MyAccount() {
   const { user, token } = useContext(UserContext);
@@ -63,7 +64,7 @@ export default function MyAccount() {
           • Free Account
         </Text>
       )}
-      <Text style={styles.text}>Number of runs this month :</Text>
+      <Text style={styles.text}>Number of runs today :</Text>
       <View style={styles.row}>
         <View style={styles.counter}>
           {/* {isPremium ? (
@@ -117,14 +118,20 @@ export default function MyAccount() {
           }}
         />
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 30,
-        }}
-      ></View>
+      {!isPremium && (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <GradientButton gradient={'redToYellow'} onPress={() => {}}>
+            PREMIUM ACCESS
+          </GradientButton>
+        </View>
+      )}
     </View>
   );
 }

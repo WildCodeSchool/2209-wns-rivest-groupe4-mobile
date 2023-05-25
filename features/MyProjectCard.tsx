@@ -1,14 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import IProjectsListing from '../interfaces/IProjectsListing';
 import { Text, View, Image, Modal } from 'react-native-ui-lib';
-import { Pressable } from 'react-native';
-import { ScrollView, Switch } from 'react-native-gesture-handler';
+import { Switch } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import GradientButton from '../components/GradientButton';
 import { UserContext } from 'contexts/UserContext';
 import { UPDATE_PUBLIC_STATE } from '../apollo/mutations';
-import { LinearGradient } from 'expo-linear-gradient';
 import ProjectDetails from './ProjectDetails';
 
 type Props = {
@@ -16,11 +14,9 @@ type Props = {
 };
 
 export default function MyProjectsCard({ project }: Props) {
-  const [isPrivate, setPrivate] = useState(project.isPublic);
   const [modalVisible, setModalVisible] = useState(false);
   const [modifyPublicState] = useMutation(UPDATE_PUBLIC_STATE);
   const { token } = useContext(UserContext);
-
   const modifyPrivacy = async () => {
     await modifyPublicState({
       variables: {
@@ -32,8 +28,17 @@ export default function MyProjectsCard({ project }: Props) {
           authorization: token,
         },
       },
-      onCompleted: () => {
-        setPrivate(!isPrivate);
+      refetchQueries: ['GetSharedProjects'],
+      update: (cache) => {
+        cache.modify({
+          id: cache.identify({
+            __typename: 'Project',
+            id: Number(project.id),
+          }),
+          fields: {
+            isPublic: () => !project.isPublic,
+          },
+        });
       },
     });
   };
@@ -48,34 +53,70 @@ export default function MyProjectsCard({ project }: Props) {
       <View>
         <Text style={styles.title}>{project.name}</Text>
         <View style={styles.row}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>
-              {project.description}
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: project.isPublic ? 'green' : 'red',
+                fontWeight: 'bold',
+                fontSize: 16,
+              }}
+            >
+              {project.isPublic ? 'Public' : 'Private'}
             </Text>
             <Switch
-              trackColor={{ false: 'grey', true: 'red' }}
-              thumbColor={isPrivate ? 'lightgrey' : 'lightgrey'}
+              trackColor={{ false: 'red', true: 'green' }}
+              thumbColor={project.isPublic ? 'lightgrey' : 'lightgrey'}
               onValueChange={() => modifyPrivacy()}
-              value={isPrivate}
+              value={project.isPublic}
             />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ marginRight: 10, color: 'white' }}>
-              {project.likes.length}
-            </Text>
-            <Image
-              style={styles.logo}
-              source={require('../assets/heart-solid-red.png')}
-            />
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ marginRight: 10, color: 'white' }}>
-              {project.comments.length}
-            </Text>
-            <Image
-              style={styles.logo}
-              source={require('../assets/speech-bubble.png')}
-            />
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Text style={{ marginRight: 10, color: 'white' }}>
+                {project.likes.length}
+              </Text>
+              <Image
+                style={styles.logo}
+                source={require('../assets/heart-solid-white.png')}
+              />
+            </View>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={{ marginRight: 10, color: 'white' }}>
+                {project.comments.length}
+              </Text>
+              <Image
+                style={styles.logo}
+                source={require('../assets/speech-bubble.png')}
+              />
+            </View>
           </View>
         </View>
         <View style={styles.content}>
@@ -91,9 +132,10 @@ export default function MyProjectsCard({ project }: Props) {
             .join('/')} at ${
             project.updatedAt.toString().split('T')[1].split('.')[0]
           }`}</Text>
-          <Text style={styles.text}>{project.description}</Text>
+          <Text style={styles.language}>JavaScript</Text>
+
+          <Text style={styles.description}>{project.description}</Text>
           <View style={styles.rowButton}>
-            <Text style={styles.language}>JavaScript</Text>
             <GradientButton
               onPress={() => setModalVisible(true)}
               gradient={'cyanToBlue'}
@@ -145,6 +187,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     alignItems: 'center',
+    marginTop: 20,
   },
   logo: {
     width: 26,
@@ -156,6 +199,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
+    height: 200,
   },
   content: {
     borderRadius: 20,
@@ -167,22 +211,31 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: 'lightgrey',
   },
+  description: {
+    marginTop: 8,
+    marginLeft: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'lightgrey',
+    maxHeight: 50,
+  },
   title: {
     fontSize: 20,
     color: 'white',
     textDecorationLine: 'underline',
-    padding: 10,
+    paddingLeft: 10,
+    paddingTop: 10,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 5,
-    marginBottom: 5,
+    margin: 0,
+    padding: 0,
   },
   rowButton: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 15,
+    marginTop: 25,
     marginBottom: 15,
   },
   language: {
@@ -190,7 +243,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'yellow',
     width: 100,
     textAlign: 'center',
-    paddingVertical: 10,
+    marginLeft: 10,
+    marginTop: 8,
+    height: 20,
   },
   access: {
     fontWeight: 'bold',

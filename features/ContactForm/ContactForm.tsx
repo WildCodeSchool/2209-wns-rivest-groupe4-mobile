@@ -82,7 +82,7 @@ export default function ContactForm() {
               placeholderTextColor="white"
               keyboardType="email-address"
               onBlur={onBlur}
-              onChangeText={(value) => onChange(reg.test(value))}
+              onChangeText={(value) => onChange(value)}
               value={value}
             />
           )}

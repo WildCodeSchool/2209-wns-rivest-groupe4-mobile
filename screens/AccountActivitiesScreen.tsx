@@ -13,7 +13,7 @@ import {
 import MyProjectsCard from '../features/MyProjectCard';
 import ProjectSupported from '../features/ProjectsSupported';
 
-export default function ProjectScreen() {
+export default function AccountActivitiesScreen() {
   const { user, token } = useContext(UserContext);
   const [userProjects, setUserProjects] = useState<IProjectsListing[]>();
   const [projectsSupported, setProjectsSupported] =
