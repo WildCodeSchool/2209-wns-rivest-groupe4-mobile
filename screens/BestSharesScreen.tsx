@@ -17,7 +17,7 @@ export default function BestSharesScreen() {
   const [order, setOrder] = useState<String | null>('ASC');
   const [searchQuery, setSearchQuery] = useState<String | null>(null);
 
-  const { refetch } = useQuery(GET_SHARED_PROJECTS, {
+  const { refetch, loading } = useQuery(GET_SHARED_PROJECTS, {
     variables: {
       limit: 10,
       offset: 0,
@@ -31,7 +31,9 @@ export default function BestSharesScreen() {
       },
     },
     onCompleted(data: { getSharedProjects: IProjectsListing[] }) {
-      setprojectsShared(data.getSharedProjects);
+      if (data) {
+        setprojectsShared(data.getSharedProjects);
+      }
     },
   });
 
@@ -72,6 +74,9 @@ export default function BestSharesScreen() {
     setPickerValue(itemValue);
     refetch();
   };
+  if (loading) {
+    return <Text>Loading</Text>;
+  }
 
   return (
     <LinearGradient
@@ -114,9 +119,10 @@ export default function BestSharesScreen() {
               <Picker.Item label="Comments 🔽" value="LessCommented" />
             </Picker>
           </View>
-          {projectsShared?.map((project) => (
-            <ProjectSupported key={project.id} project={project} />
-          ))}
+          {projectsShared &&
+            projectsShared?.map((project) => (
+              <ProjectSupported key={project.id} project={project} />
+            ))}
           {projectsShared?.length === 0 && (
             <Text style={styles.text}>No project yet</Text>
           )}

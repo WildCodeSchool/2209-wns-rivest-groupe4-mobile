@@ -15,7 +15,6 @@ export const SEND_MAIL = gql`
     SendMail(name: $name, email: $email, reason: $reason)
   }
 `;
-const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 export default function ContactForm() {
   const [statusModification, setStatusModification] = useState('');
