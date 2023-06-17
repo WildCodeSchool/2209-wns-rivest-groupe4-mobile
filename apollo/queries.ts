@@ -60,6 +60,13 @@ export const GET_PROJECTS_BY_USER_ID = gql`
     getProjectsByUserId(userId: $userId) {
       comments {
         id
+        comment
+        createdAt
+        updatedAt
+        user {
+          id
+          pseudo
+        }
       }
       likes {
         user {
@@ -108,8 +115,20 @@ export const GET_PROJECTS_SUPPORTED = gql`
 `;
 
 export const GET_SHARED_PROJECTS = gql`
-  query Query {
-    getSharedProjects {
+  query GetSharedProjects(
+    $offset: Float!
+    $limit: Float!
+    $query: String
+    $order: String
+    $orderBy: String
+  ) {
+    getSharedProjects(
+      offset: $offset
+      limit: $limit
+      query: $query
+      order: $order
+      orderBy: $orderBy
+    ) {
       id
       name
       description
@@ -128,6 +147,13 @@ export const GET_SHARED_PROJECTS = gql`
       }
       comments {
         id
+        comment
+        createdAt
+        updatedAt
+        user {
+          id
+          pseudo
+        }
       }
     }
   }
@@ -147,6 +173,16 @@ export const GET_FOLDER_BY_IDPROJECT = gql`
       parentFolder {
         id
       }
+    }
+  }
+`;
+
+export const GET_ALL_COMMENTS = gql`
+  query Query {
+    getAllComments {
+      id
+      comment
+      createdAt
     }
   }
 `;

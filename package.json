@@ -16,9 +16,7 @@
   "jest": {
     "preset": "jest-expo",
     "setupFiles": [
-      
       "<rootDir>/jestSetup.js"
-    
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif)$": "<rootDir>/__mocks__/fileMock.js",
@@ -27,6 +25,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.5",
+    "@react-native-picker/picker": "2.4.8",
     "@react-navigation/bottom-tabs": "^6.5.3",
     "@react-navigation/drawer": "^6.6.2",
     "@react-navigation/material-bottom-tabs": "^6.2.11",
