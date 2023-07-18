@@ -82,6 +82,9 @@ export const ADD_COMMENT = gql`
         id
         comments {
           id
+          user {
+            id
+          }
         }
       }
     }

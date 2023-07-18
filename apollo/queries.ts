@@ -22,7 +22,6 @@ export const GET_LOGGED_USER = gql`
       email
       pseudo
       premium
-      dailyRuns
     }
   }
 `;
@@ -38,17 +37,23 @@ export const GET_ONE_USER = gql`
   }
 `;
 
+export const GET_DAILY_RUNS = gql`
+  query GetDailyRunsUser {
+    getDailyRunsUser
+  }
+`;
+
 export const GET_USER_LIKES = gql`
-  query Query {
-    getAllLikesByUser {
+  query GetMonthlyLikesByUser {
+    getMonthlyLikesByUser {
       id
     }
   }
 `;
 
 export const GET_USER_COMMENTS = gql`
-  query GetAllCommentsByUser {
-    getAllCommentsByUser {
+  query GetMonthlyCommentsByUser {
+    getMonthlyCommentsByUser {
       id
     }
   }
@@ -93,6 +98,13 @@ export const GET_PROJECTS_SUPPORTED = gql`
     getProjectsSupported(userId: $userId) {
       comments {
         id
+        comment
+        createdAt
+        updatedAt
+        user {
+          id
+          pseudo
+        }
       }
       createdAt
       description
