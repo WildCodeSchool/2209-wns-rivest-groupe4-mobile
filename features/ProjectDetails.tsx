@@ -18,9 +18,15 @@ import {
 } from '../apollo/mutations';
 import { LinearGradient } from 'expo-linear-gradient';
 import IFolder from 'interfaces/IFolder';
-import { GET_FOLDER_BY_IDPROJECT } from 'apollo/queries';
+import {
+  GET_FOLDER_BY_IDPROJECT,
+  GET_USER_COMMENTS,
+  GET_USER_LIKES,
+} from 'apollo/queries';
 import { useNavigation } from '@react-navigation/native';
 import EditorScreen from 'screens/EditorScreen';
+import ILike from 'interfaces/ILike';
+import IComment from 'interfaces/IComment';
 
 type Props = {
   project: IProjectsListing;
@@ -48,11 +54,36 @@ export default function ProjectDetails({
   const [userComment, setUserComment] = useState('');
   const [userCommentModify, setUserCommentModify] = useState('');
   const [modalCodeVisible, setModalCodeVisible] = useState<boolean>(false);
+  const [monthlyLikes, setMonthlyLikes] = useState<number>(0);
+  const [monthlyComments, setMonthlyComments] = useState<number>(0);
 
   const navigation = useNavigation<any>();
   if (user == null) {
     return navigation.navigate({ name: 'Login' });
   }
+
+  useQuery(GET_USER_LIKES, {
+    context: {
+      headers: {
+        authorization: token,
+      },
+    },
+    onCompleted(data: { getMonthlyLikesByUser: ILike[] }) {
+      setMonthlyLikes(data.getMonthlyLikesByUser.length);
+    },
+  });
+
+  useQuery(GET_USER_COMMENTS, {
+    context: {
+      headers: {
+        authorization: token,
+      },
+    },
+    onCompleted(data: { getMonthlyCommentsByUser: IComment[] }) {
+      setMonthlyComments(data.getMonthlyCommentsByUser.length);
+    },
+  });
+
   const [addLike] = useMutation(ADD_LIKE, {
     variables: { idProject: Number(project.id) },
     context: {
@@ -60,11 +91,20 @@ export default function ProjectDetails({
         authorization: token,
       },
     },
+    refetchQueries: ['GetMonthlyLikesByUser'],
     onCompleted() {
       setIsLiked(true);
-      console.log(project.likes.length);
     },
   });
+
+  const postLike = () => {
+    user?.premium || monthlyLikes < 5
+      ? addLike()
+      : Alert.alert(
+          "You've reached your monthly likes limit",
+          'Upgrade to premium to get unlimited likes',
+        );
+  };
 
   const [deleteLike] = useMutation(DELETE_LIKE, {
     variables: { idProject: Number(project.id) },
@@ -73,6 +113,7 @@ export default function ProjectDetails({
         authorization: token,
       },
     },
+    refetchQueries: ['GetMonthlyLikesByUser'],
     onCompleted() {
       setIsLiked(false);
     },
@@ -99,6 +140,7 @@ export default function ProjectDetails({
         authorization: token,
       },
     },
+    refetchQueries: ['GetMonthlyCommentsByUser'],
     onCompleted() {
       setUserComment('');
     },
@@ -140,17 +182,22 @@ export default function ProjectDetails({
   });
 
   const postComment = () => {
-    addCommentary({
-      variables: {
-        idProject: Number(project.id),
-        comment: userComment,
-      },
-      context: {
-        headers: {
-          authorization: token,
-        },
-      },
-    });
+    user?.premium || monthlyComments < 5
+      ? addCommentary({
+          variables: {
+            idProject: Number(project.id),
+            comment: userComment,
+          },
+          context: {
+            headers: {
+              authorization: token,
+            },
+          },
+        })
+      : Alert.alert(
+          "You've reached your monthly comments limit",
+          'Upgrade to premium to get unlimited comments',
+        );
   };
 
   const handleComment = (e: string) => {
@@ -254,6 +301,7 @@ export default function ProjectDetails({
           authorization: token,
         },
       },
+      refetchQueries: ['GetMonthlyCommentsByUser'],
       update: (cache) => {
         cache.modify({
           id: cache.identify({
@@ -469,8 +517,12 @@ export default function ProjectDetails({
                 <Pressable
                   onPress={() =>
                     !isLiked && user.id != project.user.id
-                      ? addLike()
-                      : isLiked && user.id != project.user.id && deleteLike()
+                      ? postLike()
+                      : isLiked && user.id != project.user.id
+                      ? deleteLike()
+                      : user.id == project.user.id
+                      ? Alert.alert("You can't like your own project")
+                      : null
                   }
                 >
                   <Image

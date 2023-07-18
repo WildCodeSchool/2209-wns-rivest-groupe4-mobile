@@ -1,27 +1,29 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from 'contexts/UserContext';
 import { useQuery } from '@apollo/client';
 import IProjectsListing from 'interfaces/IProjectsListing';
 import { GET_SHARED_PROJECTS } from 'apollo/queries';
 import ProjectSupported from 'features/ProjectsSupported';
 import { Picker } from '@react-native-picker/picker';
+import { LoaderScreen } from 'react-native-ui-lib';
 
 export default function BestSharesScreen() {
   const { token } = useContext(UserContext);
   const [projectsShared, setprojectsShared] = useState<IProjectsListing[]>();
-  const [pickerValue, setPickerValue] = useState<String>('Date 🔼');
+  const [pickerValue, setPickerValue] = useState<string>('Date 🔼');
   const [selectedFilter, setSelectedFilter] = useState<String>('createdAt');
-  const [order, setOrder] = useState<String | null>('ASC');
-  const [searchQuery, setSearchQuery] = useState<String | null>(null);
+  const [order, setOrder] = useState<string | null>('ASC');
+  const [searchQuery, setSearchQuery] = useState<string | null>(null);
+  const [searchParam, setSearchParam] = useState<string | null>(null);
 
   const { refetch, loading } = useQuery(GET_SHARED_PROJECTS, {
     variables: {
       limit: 10,
       offset: 0,
-      query: searchQuery,
+      query: searchParam,
       order,
       orderBy: selectedFilter,
     },
@@ -37,12 +39,22 @@ export default function BestSharesScreen() {
     },
   });
 
+  useEffect(() => {
+    let timer1 = setTimeout(() => setSearchParam(searchQuery), 1000);
+    return () => {
+      clearTimeout(timer1);
+    };
+  }, [searchQuery]);
+
   const handleSearchQuery = (text: string) => {
-    setSearchQuery(text);
-    refetch();
+    if (text === '' || text === null) {
+      setSearchQuery(null);
+    } else {
+      setSearchQuery(text);
+    }
   };
 
-  const handleSearchSort = (itemValue: String) => {
+  const handleSearchSort = (itemValue: string) => {
     switch (itemValue) {
       case 'DateAsc':
         setOrder('ASC');
@@ -74,8 +86,17 @@ export default function BestSharesScreen() {
     setPickerValue(itemValue);
     refetch();
   };
+
   if (loading) {
-    return <Text>Loading</Text>;
+    return (
+      <LoaderScreen
+        color={'white'}
+        backgroundColor={'#1d2448'}
+        message={'Loading...'}
+        messageStyle={{ color: 'white' }}
+        containerStyle={{ flex: 1, backgroundColor: '#1d2448' }}
+      />
+    );
   }
 
   return (
@@ -100,7 +121,8 @@ export default function BestSharesScreen() {
           >
             <TextInput
               style={styles.search}
-              placeholder="Search"
+              placeholder={'Search'}
+              value={searchQuery != null ? searchQuery : ''}
               placeholderTextColor="black"
               onChangeText={(text) => handleSearchQuery(text)}
             ></TextInput>
