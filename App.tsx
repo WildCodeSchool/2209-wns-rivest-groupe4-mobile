@@ -29,6 +29,13 @@ type ReducerAction = {
   token: string | null | undefined;
 };
 
+const checkVariables = () => {
+  let CHECK_BACKEND_PORT;
+  let CHECK_BACKEND_URL;
+  CHECK_BACKEND_PORT = BACKEND_PORT;
+  CHECK_BACKEND_URL = BACKEND_URL;
+};
+
 // Log any GraphQL errors or network error that occurred
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
