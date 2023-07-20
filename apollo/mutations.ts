@@ -36,6 +36,14 @@ export const UPDATE_PUBLIC_STATE = gql`
   }
 `;
 
+export const DELETE_PROJECT = gql`
+  mutation DeleteProject($deleteProjectId: Float!) {
+    deleteProject(id: $deleteProjectId)
+  }
+`;
+
+// COMMENT MUTATIONS
+
 export const DELETE_COMMENT = gql`
   mutation Mutation($idComment: Float!) {
     deleteComment(idComment: $idComment)
@@ -46,6 +54,14 @@ export const MODIFY_COMMENT = gql`
   mutation Mutation($content: String!, $idComment: Float!) {
     modifyComment(content: $content, idComment: $idComment) {
       comment
+      project {
+        id
+        comments {
+          id
+          comment
+          updatedAt
+        }
+      }
     }
   }
 `;
@@ -64,14 +80,29 @@ export const ADD_COMMENT = gql`
       }
       project {
         id
+        comments {
+          id
+          user {
+            id
+          }
+        }
       }
     }
   }
 `;
 
+// LIKE MUTATIONS
+
 export const ADD_LIKE = gql`
   mutation Mutation($idProject: Float!) {
-    addLike(idProject: $idProject)
+    addLike(idProject: $idProject) {
+      project {
+        id
+        likes {
+          id
+        }
+      }
+    }
   }
 `;
 

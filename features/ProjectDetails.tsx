@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import IProjectsListing from '../interfaces/IProjectsListing';
 import { Text, View, Image, Modal } from 'react-native-ui-lib';
-import { Pressable } from 'react-native';
+import { Alert, Pressable } from 'react-native';
 import { ScrollView, Switch, TextInput } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import GradientButton from '../components/GradientButton';
@@ -12,14 +12,21 @@ import {
   ADD_LIKE,
   DELETE_COMMENT,
   DELETE_LIKE,
+  DELETE_PROJECT,
   MODIFY_COMMENT,
   UPDATE_PUBLIC_STATE,
 } from '../apollo/mutations';
 import { LinearGradient } from 'expo-linear-gradient';
 import IFolder from 'interfaces/IFolder';
-import { GET_FOLDER_BY_IDPROJECT, PROJECT_IS_LIKED } from 'apollo/queries';
-import IComment from 'interfaces/IComment';
+import {
+  GET_FOLDER_BY_IDPROJECT,
+  GET_USER_COMMENTS,
+  GET_USER_LIKES,
+} from 'apollo/queries';
 import { useNavigation } from '@react-navigation/native';
+import EditorScreen from 'screens/EditorScreen';
+import ILike from 'interfaces/ILike';
+import IComment from 'interfaces/IComment';
 
 type Props = {
   project: IProjectsListing;
@@ -32,44 +39,98 @@ export default function ProjectDetails({
   modalVisible,
   setModalVisible,
 }: Props) {
-  const [isPrivate, setPrivate] = useState(project.isPublic);
   const [modifyPublicState] = useMutation(UPDATE_PUBLIC_STATE);
   const { user, token } = useContext(UserContext);
 
   const [mainFolder, setMainFolder] = useState<IFolder>();
   const [folders, setFolders] = useState<IFolder[]>();
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isLiked, setIsLiked] = useState<boolean>(
+    project.likes.filter((el) => el.user.id === user?.id).length > 0
+      ? true
+      : false,
+  );
   const [commentEdition, setCommentEdition] = useState<number | null>(null);
   const [pageSelected, setPageSelected] = useState<number>(1);
-  const [comments, setComments] = useState<IComment[]>();
   const [userComment, setUserComment] = useState('');
   const [userCommentModify, setUserCommentModify] = useState('');
+  const [modalCodeVisible, setModalCodeVisible] = useState<boolean>(false);
+  const [monthlyLikes, setMonthlyLikes] = useState<number>(0);
+  const [monthlyComments, setMonthlyComments] = useState<number>(0);
 
   const navigation = useNavigation<any>();
-
   if (user == null) {
     return navigation.navigate({ name: 'Login' });
   }
 
-  const [addLike] = useMutation(ADD_LIKE, {
+  useQuery(GET_USER_LIKES, {
     context: {
       headers: {
         authorization: token,
       },
     },
+    onCompleted(data: { getMonthlyLikesByUser: ILike[] }) {
+      setMonthlyLikes(data.getMonthlyLikesByUser.length);
+    },
+  });
+
+  useQuery(GET_USER_COMMENTS, {
+    context: {
+      headers: {
+        authorization: token,
+      },
+    },
+    onCompleted(data: { getMonthlyCommentsByUser: IComment[] }) {
+      setMonthlyComments(data.getMonthlyCommentsByUser.length);
+    },
+  });
+
+  const [addLike] = useMutation(ADD_LIKE, {
+    variables: { idProject: Number(project.id) },
+    context: {
+      headers: {
+        authorization: token,
+      },
+    },
+    refetchQueries: ['GetMonthlyLikesByUser'],
     onCompleted() {
       setIsLiked(true);
     },
   });
 
+  const postLike = () => {
+    user?.premium || monthlyLikes < 5
+      ? addLike()
+      : Alert.alert(
+          "You've reached your monthly likes limit",
+          'Upgrade to premium to get unlimited likes',
+        );
+  };
+
   const [deleteLike] = useMutation(DELETE_LIKE, {
+    variables: { idProject: Number(project.id) },
     context: {
       headers: {
         authorization: token,
       },
     },
+    refetchQueries: ['GetMonthlyLikesByUser'],
     onCompleted() {
       setIsLiked(false);
+    },
+    update: (cache) => {
+      cache.modify({
+        id: cache.identify({
+          __typename: 'Project',
+          id: Number(project.id),
+        }),
+        fields: {
+          likes(existingLikes, { readField }) {
+            return existingLikes.filter(
+              (likeRef: any) => user?.id !== readField('id', likeRef.user),
+            );
+          },
+        },
+      });
     },
   });
 
@@ -79,20 +140,8 @@ export default function ProjectDetails({
         authorization: token,
       },
     },
-    onCompleted(data: { addComment: IComment }) {
-      const newComment: IComment = {
-        id: data.addComment?.id,
-        comment: data.addComment?.comment,
-        createdAt: data.addComment?.createdAt,
-        project: data.addComment?.project,
-        updatedAt: data.addComment?.updatedAt,
-        user: data.addComment?.user,
-      };
-      if (comments) {
-        setComments([newComment, ...comments]);
-      } else {
-        setComments([newComment]);
-      }
+    refetchQueries: ['GetMonthlyCommentsByUser'],
+    onCompleted() {
       setUserComment('');
     },
   });
@@ -104,27 +153,12 @@ export default function ProjectDetails({
       },
     },
     onCompleted() {
-      if (comments) {
-        const newComments = [...comments];
-        for (let i = 0; i < newComments?.length; i += 1) {
-          if (newComments[i].id === commentEdition) {
-            newComments[i] = {
-              id: newComments[i].id,
-              comment: userCommentModify,
-              updatedAt: new Date(),
-              createdAt: newComments[i].createdAt,
-              project: newComments[i].project,
-              user: newComments[i].user,
-            };
-          }
-        }
-        setComments(newComments.sort((a, b) => b.id - a.id));
-      }
       setCommentEdition(null);
     },
   });
 
   const [deleteComment] = useMutation(DELETE_COMMENT);
+  const [deleteProject] = useMutation(DELETE_PROJECT);
 
   useQuery(GET_FOLDER_BY_IDPROJECT, {
     variables: { idProject: Number(project.id) },
@@ -147,29 +181,163 @@ export default function ProjectDetails({
     },
   });
 
-  useQuery(PROJECT_IS_LIKED, {
-    variables: { idProject: Number(project.id) },
-    context: {
-      headers: {
-        authorization: token,
-      },
-    },
-    onCompleted(data: { projectIsLiked: boolean }) {
-      setIsLiked(data.projectIsLiked);
-    },
-  });
   const postComment = () => {
-    addCommentary({
+    user?.premium || monthlyComments < 5
+      ? addCommentary({
+          variables: {
+            idProject: Number(project.id),
+            comment: userComment,
+          },
+          context: {
+            headers: {
+              authorization: token,
+            },
+          },
+        })
+      : Alert.alert(
+          "You've reached your monthly comments limit",
+          'Upgrade to premium to get unlimited comments',
+        );
+  };
+
+  const handleComment = (e: string) => {
+    setUserComment(e);
+  };
+
+  const deleteProjectConfirmation = () => {
+    Alert.alert('Wait a second...', 'Are you sure to delete this project ?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => handleDeleteProject() },
+    ]);
+  };
+
+  const deleteCommentConfirmation = (id: number) => {
+    Alert.alert('Wait a second...', 'Are you sure to delete this comment ?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => handleDeleteComment(id) },
+    ]);
+  };
+
+  const modifyPrivacy = async () => {
+    await modifyPublicState({
       variables: {
-        idProject: Number(project.id),
-        comment: userComment,
+        modifyProjectId: Number(project.id),
+        isPublic: !project.isPublic,
       },
       context: {
         headers: {
           authorization: token,
         },
       },
+      refetchQueries: ['GetSharedProjects'],
+      update: (cache) => {
+        cache.modify({
+          id: cache.identify({
+            __typename: 'Project',
+            id: Number(project.id),
+          }),
+          fields: {
+            isPublic: () => !project.isPublic,
+          },
+        });
+      },
     });
+  };
+
+  const handleConfirmModifyComment = (id: number) => {
+    modifyComment({
+      variables: {
+        idComment: Number(id),
+        content: userCommentModify,
+      },
+    });
+  };
+
+  const handleModifyComment = (id: number) => {
+    setCommentEdition(id);
+    if (
+      project.comments &&
+      project.comments?.filter((el) => el.id === id).length > 0
+    ) {
+      setUserCommentModify(
+        project.comments?.filter((el) => el.id === id)[0].comment,
+      );
+    }
+  };
+
+  const handleDeleteProject = () => {
+    deleteProject({
+      variables: {
+        deleteProjectId: Number(project.id),
+      },
+      context: {
+        headers: {
+          authorization: token,
+        },
+      },
+      onCompleted: () => {
+        setModalVisible(false);
+      },
+      update: (cache) => {
+        cache.evict({ id: 'Project:' + project.id });
+      },
+    });
+  };
+
+  const handleDeleteComment = (id: number) => {
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    deleteComment({
+      variables: {
+        idComment: Number(id),
+      },
+      context: {
+        headers: {
+          authorization: token,
+        },
+      },
+      refetchQueries: ['GetMonthlyCommentsByUser'],
+      update: (cache) => {
+        cache.modify({
+          id: cache.identify({
+            __typename: 'Project',
+            id: Number(project.id),
+          }),
+          fields: {
+            comments(existingCommentRefs, { readField }) {
+              return existingCommentRefs.filter(
+                (commentRef: any) => id !== readField('id', commentRef),
+              );
+            },
+          },
+        });
+      },
+    });
+  };
+
+  const handleChangeComment = (e: string) => {
+    setUserCommentModify(e);
+  };
+
+  const handlePageSelected = (position: string) => {
+    if (position === 'left') {
+      if (pageSelected > 1) {
+        setPageSelected(pageSelected - 1);
+      }
+    }
+    if (position === 'right') {
+      if (
+        project.comments &&
+        pageSelected < Math.floor(project.comments.length / 10) + 1
+      ) {
+        setPageSelected(pageSelected + 1);
+      }
+    }
   };
 
   const dateFormat = (date: Date): string => {
@@ -210,10 +378,6 @@ export default function ProjectDetails({
         : `1 year ago`;
     }
     return date.toString();
-  };
-
-  const handleComment = (e: string) => {
-    setUserComment(e);
   };
 
   const displayProjectTree = (
@@ -262,74 +426,6 @@ export default function ProjectDetails({
       );
     });
 
-  const modifyPrivacy = async () => {
-    await modifyPublicState({
-      variables: {
-        modifyProjectId: Number(project.id),
-        isPublic: !project.isPublic,
-      },
-      context: {
-        headers: {
-          authorization: token,
-        },
-      },
-      onCompleted: () => {
-        setPrivate(!isPrivate);
-      },
-    });
-  };
-
-  const handleConfirmModifyComment = (id: number) => {
-    modifyComment({
-      variables: {
-        idComment: Number(id),
-        content: userCommentModify,
-      },
-    });
-  };
-
-  const handleModifyComment = (id: number) => {
-    setCommentEdition(id);
-    if (comments && comments?.filter((el) => el.id === id).length > 0) {
-      setUserCommentModify(comments?.filter((el) => el.id === id)[0].comment);
-    }
-  };
-
-  const handleDeleteComment = (id: number) => {
-    // eslint-disable-next-line no-restricted-globals, no-alert
-    deleteComment({
-      variables: {
-        idComment: id,
-      },
-      context: {
-        headers: {
-          authorization: token,
-        },
-      },
-    });
-    if (comments) {
-      const newComments = comments?.filter((el) => el.id !== id);
-      setComments(newComments);
-    }
-  };
-
-  const handleChangeComment = (e: string) => {
-    setUserCommentModify(e);
-  };
-
-  const handlePageSelected = (position: string) => {
-    if (position === 'left') {
-      if (pageSelected > 1) {
-        setPageSelected(pageSelected - 1);
-      }
-    }
-    if (position === 'right') {
-      if (comments && pageSelected < Math.floor(comments.length / 10) + 1) {
-        setPageSelected(pageSelected + 1);
-      }
-    }
-  };
-
   return (
     <Modal
       transparent={true}
@@ -340,6 +436,10 @@ export default function ProjectDetails({
         setModalVisible(!modalVisible);
       }}
     >
+      <EditorScreen
+        modalVisible={modalCodeVisible}
+        setModalVisible={setModalCodeVisible}
+      />
       <LinearGradient
         colors={['#1d2448', '#131d2f']}
         start={{ x: 0, y: 1 }}
@@ -378,14 +478,14 @@ export default function ProjectDetails({
                       alignItems: 'center',
                     }}
                   >
-                    <Text style={{ color: isPrivate ? 'red' : 'green' }}>
-                      {isPrivate ? 'Private' : 'Public'}
+                    <Text style={{ color: project.isPublic ? 'green' : 'red' }}>
+                      {project.isPublic ? 'Public' : 'Private'}
                     </Text>
                     <Switch
-                      trackColor={{ false: 'grey', true: 'red' }}
-                      thumbColor={isPrivate ? 'lightgrey' : 'lightgrey'}
+                      trackColor={{ false: 'red', true: 'green' }}
+                      thumbColor={project.isPublic ? 'lightgrey' : 'lightgrey'}
                       onValueChange={() => modifyPrivacy()}
-                      value={isPrivate}
+                      value={project.isPublic}
                     />
                   </View>
                 )}
@@ -416,9 +516,13 @@ export default function ProjectDetails({
                 </Text>
                 <Pressable
                   onPress={() =>
-                    isLiked && user.id != project.user.id
-                      ? addLike()
-                      : !isLiked && user.id != project.user.id && deleteLike()
+                    !isLiked && user.id != project.user.id
+                      ? postLike()
+                      : isLiked && user.id != project.user.id
+                      ? deleteLike()
+                      : user.id == project.user.id
+                      ? Alert.alert("You can't like your own project")
+                      : null
                   }
                 >
                   <Image
@@ -449,19 +553,29 @@ export default function ProjectDetails({
               {folders && displayProjectTree(folders, 1, false)}
             </View>
             <View style={styles.button}>
-              <GradientButton gradient="cyanToBlue" onPress={() => {}}>
+              <GradientButton
+                gradient="cyanToBlue"
+                onPress={() => {
+                  setModalCodeVisible(true);
+                }}
+              >
                 ACCESS THE CODE
               </GradientButton>
             </View>
             <View style={styles.commentaries}>
               <Text style={styles.titleUnderline}>Commentaries :</Text>
-              {comments && comments.length > 0 ? (
+              {project.comments && project.comments.length > 0 ? (
                 <View style={styles.commentariesContainer}>
-                  {comments &&
-                    comments
+                  {project.comments &&
+                    project.comments
                       .filter(
                         (el, index) =>
                           Math.floor(index / 10) === pageSelected - 1,
+                      )
+                      .sort(
+                        (a, b) =>
+                          new Date(b.createdAt).getTime() -
+                          new Date(a.createdAt).getTime(),
                       )
                       .map((el, index) => (
                         <View
@@ -472,7 +586,7 @@ export default function ProjectDetails({
                             width: '100%',
                             borderBottomColor: 'white',
                             borderBottomWidth:
-                              index === comments.length - 1 ? 0 : 2,
+                              index === project.comments.length - 1 ? 0 : 2,
                             padding: 10,
                           }}
                         >
@@ -557,7 +671,7 @@ export default function ProjectDetails({
                                 )}
                                 <Pressable
                                   onPress={() => {
-                                    handleDeleteComment(el.id);
+                                    deleteCommentConfirmation(el.id);
                                   }}
                                 >
                                   <Image
@@ -587,7 +701,7 @@ export default function ProjectDetails({
                 <Text style={styles.noCommentary}>Not commented yet...</Text>
               )}
             </View>
-            {comments && comments.length > 0 && (
+            {project.comments && project.comments.length > 0 && (
               <View
                 style={{
                   flex: 1,
@@ -605,8 +719,8 @@ export default function ProjectDetails({
                 >
                   <Text style={{ color: 'white', marginRight: 20 }}>&lt;</Text>
                 </Pressable>
-                {comments &&
-                  comments.map(
+                {project.comments &&
+                  project.comments.map(
                     (el, index) =>
                       (index === 0 || index % 10 === 0) && (
                         <Pressable
@@ -655,11 +769,24 @@ export default function ProjectDetails({
                 onPress={() => {
                   postComment();
                 }}
-                gradient="cyanToBlue"
+                gradient={userComment == '' ? 'disable' : 'cyanToBlue'}
               >
                 SEND COMMENTARY
               </GradientButton>
             </View>
+
+            {project.user.id === user?.id && (
+              <View style={{ marginTop: 50 }}>
+                <GradientButton
+                  onPress={() => {
+                    deleteProjectConfirmation();
+                  }}
+                  gradient="redToYellow"
+                >
+                  DELETE THE PROJECT
+                </GradientButton>
+              </View>
+            )}
           </View>
         </ScrollView>
       </LinearGradient>

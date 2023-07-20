@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 //To add gradient style
 //Add your style name in Gradient Type
-type Gradient = 'cyanToBlue' | 'redToYellow' | 'greenToBlue';
+type Gradient = 'cyanToBlue' | 'redToYellow' | 'greenToBlue' | 'disable';
 type ColorPalette = { [key: string]: [string, string] };
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
 //Add your gradient color associate to your style name
 const possibleGradient: ColorPalette = {
   cyanToBlue: ['#06b6d4', '#3f83f8'],
+  disable: ['lightgrey', 'grey'],
   redToYellow: ['#F05252', '#FCE96A'],
   greenToBlue: ['#00D40E', '#00BA2D'],
 };

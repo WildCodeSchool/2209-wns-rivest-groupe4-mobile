@@ -22,7 +22,6 @@ export const GET_LOGGED_USER = gql`
       email
       pseudo
       premium
-      dailyRuns
     }
   }
 `;
@@ -38,17 +37,23 @@ export const GET_ONE_USER = gql`
   }
 `;
 
+export const GET_DAILY_RUNS = gql`
+  query GetDailyRunsUser {
+    getDailyRunsUser
+  }
+`;
+
 export const GET_USER_LIKES = gql`
-  query Query {
-    getAllLikesByUser {
+  query GetMonthlyLikesByUser {
+    getMonthlyLikesByUser {
       id
     }
   }
 `;
 
 export const GET_USER_COMMENTS = gql`
-  query GetAllCommentsByUser {
-    getAllCommentsByUser {
+  query GetMonthlyCommentsByUser {
+    getMonthlyCommentsByUser {
       id
     }
   }
@@ -60,6 +65,13 @@ export const GET_PROJECTS_BY_USER_ID = gql`
     getProjectsByUserId(userId: $userId) {
       comments {
         id
+        comment
+        createdAt
+        updatedAt
+        user {
+          id
+          pseudo
+        }
       }
       likes {
         user {
@@ -86,6 +98,13 @@ export const GET_PROJECTS_SUPPORTED = gql`
     getProjectsSupported(userId: $userId) {
       comments {
         id
+        comment
+        createdAt
+        updatedAt
+        user {
+          id
+          pseudo
+        }
       }
       createdAt
       description
@@ -108,8 +127,20 @@ export const GET_PROJECTS_SUPPORTED = gql`
 `;
 
 export const GET_SHARED_PROJECTS = gql`
-  query Query {
-    getSharedProjects {
+  query GetSharedProjects(
+    $offset: Float!
+    $limit: Float!
+    $query: String
+    $order: String
+    $orderBy: String
+  ) {
+    getSharedProjects(
+      offset: $offset
+      limit: $limit
+      query: $query
+      order: $order
+      orderBy: $orderBy
+    ) {
       id
       name
       description
@@ -128,6 +159,13 @@ export const GET_SHARED_PROJECTS = gql`
       }
       comments {
         id
+        comment
+        createdAt
+        updatedAt
+        user {
+          id
+          pseudo
+        }
       }
     }
   }
@@ -147,6 +185,16 @@ export const GET_FOLDER_BY_IDPROJECT = gql`
       parentFolder {
         id
       }
+    }
+  }
+`;
+
+export const GET_ALL_COMMENTS = gql`
+  query Query {
+    getAllComments {
+      id
+      comment
+      createdAt
     }
   }
 `;

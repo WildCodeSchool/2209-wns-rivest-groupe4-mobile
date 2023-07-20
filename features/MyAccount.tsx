@@ -1,18 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { UserContext } from 'contexts/UserContext';
 import { useQuery } from '@apollo/client';
-import { GET_USER_COMMENTS, GET_USER_LIKES } from 'apollo/queries';
+import {
+  GET_DAILY_RUNS,
+  GET_USER_COMMENTS,
+  GET_USER_LIKES,
+} from 'apollo/queries';
 import ILike from 'interfaces/ILike';
 import IComment from 'interfaces/IComment';
+import GradientButton from 'components/GradientButton';
 
 export default function MyAccount() {
   const { user, token } = useContext(UserContext);
   const [likes, setLikes] = useState<number>(0);
   const [comments, setComments] = useState<number>(0);
-  const [isPremium, setIsPremium] = useState<boolean>(
-    user ? user.premium : false,
-  );
+  const [runs, setRuns] = useState<number>(0);
 
   useQuery(GET_USER_LIKES, {
     context: {
@@ -20,8 +23,19 @@ export default function MyAccount() {
         authorization: token,
       },
     },
-    onCompleted(data: { getAllLikesByUser: ILike[] }) {
-      setLikes(data.getAllLikesByUser.length);
+    onCompleted(data: { getMonthlyLikesByUser: ILike[] }) {
+      setLikes(data.getMonthlyLikesByUser.length);
+    },
+  });
+
+  useQuery(GET_DAILY_RUNS, {
+    context: {
+      headers: {
+        authorization: token,
+      },
+    },
+    onCompleted(data: { getDailyRunsUser: number }) {
+      setRuns(data.getDailyRunsUser);
     },
   });
 
@@ -31,14 +45,14 @@ export default function MyAccount() {
         authorization: token,
       },
     },
-    onCompleted(data: { getAllCommentsByUser: IComment[] }) {
-      setComments(data.getAllCommentsByUser.length);
+    onCompleted(data: { getMonthlyCommentsByUser: IComment[] }) {
+      setComments(data.getMonthlyCommentsByUser.length);
     },
   });
 
   return (
     <View style={styles.mainContainer}>
-      {isPremium ? (
+      {user?.premium ? (
         <Text
           style={{
             color: 'brown',
@@ -63,19 +77,19 @@ export default function MyAccount() {
           • Free Account
         </Text>
       )}
-      <Text style={styles.text}>Number of runs this month :</Text>
+      <Text style={styles.text}>Number of runs today :</Text>
       <View style={styles.row}>
         <View style={styles.counter}>
-          {/* {isPremium ? (
-            <Text style={styles.counter}> {count} / ∞</Text>
+          {user?.premium ? (
+            <Text style={styles.counter}> {runs} / ∞</Text>
           ) : (
-            <Text style={styles.counter}> {count} / 50</Text>
-          )} */}
+            <Text style={styles.counter}> {runs} / 50</Text>
+          )}
         </View>
         <View
           style={{
             backgroundColor: '#f1672c',
-            // width: isPremium ? `100%` : `${count * 2}%`,
+            width: user?.premium ? `100%` : `${runs * 2}%`,
             borderRadius: 5,
             height: 30,
           }}
@@ -84,7 +98,7 @@ export default function MyAccount() {
       <Text style={styles.text}>Number of likes this month :</Text>
       <View style={styles.row}>
         <View style={styles.counter}>
-          {isPremium ? (
+          {user?.premium ? (
             <Text style={styles.counter}> {likes} / ∞</Text>
           ) : (
             <Text style={styles.counter}> {likes} / 5</Text>
@@ -93,7 +107,7 @@ export default function MyAccount() {
         <View
           style={{
             backgroundColor: '#f1bf25',
-            width: isPremium ? `100%` : `${likes * 20}%`,
+            width: user?.premium ? `100%` : `${likes * 20}%`,
             borderRadius: 5,
             height: 30,
           }}
@@ -102,7 +116,7 @@ export default function MyAccount() {
       <Text style={styles.text}>Number commentaries this month :</Text>
       <View style={styles.row}>
         <View style={styles.counter}>
-          {isPremium ? (
+          {user?.premium ? (
             <Text style={styles.counter}> {comments} / ∞</Text>
           ) : (
             <Text style={styles.counter}> {comments} / 5</Text>
@@ -111,20 +125,26 @@ export default function MyAccount() {
         <View
           style={{
             backgroundColor: '#3178c6',
-            width: isPremium ? `100%` : `${comments * 20}%`,
+            width: user?.premium ? `100%` : `${comments * 20}%`,
             borderRadius: 5,
             height: 30,
           }}
         />
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 30,
-        }}
-      ></View>
+      {!user?.premium && (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <GradientButton gradient={'redToYellow'} onPress={() => {}}>
+            PREMIUM ACCESS
+          </GradientButton>
+        </View>
+      )}
     </View>
   );
 }

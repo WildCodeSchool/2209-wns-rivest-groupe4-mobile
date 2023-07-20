@@ -1,6 +1,8 @@
 import {
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
+  HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
 } from '@apollo/client';
@@ -14,6 +16,7 @@ import React, { useMemo, useState } from 'react';
 import AuthStack from 'stacks/AuthStack';
 import HomeStack from 'stacks/HomeStack';
 import fonts from './assets/fonts/fonts';
+import { onError } from '@apollo/client/link/error';
 
 type ReducerState = {
   isLoading: boolean;
@@ -26,13 +29,34 @@ type ReducerAction = {
   token: string | null | undefined;
 };
 
+const checkVariables = () => {
+  let CHECK_BACKEND_PORT;
+  let CHECK_BACKEND_URL;
+  CHECK_BACKEND_PORT = BACKEND_PORT;
+  CHECK_BACKEND_URL = BACKEND_URL;
+};
+
+// Log any GraphQL errors or network error that occurred
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+      ),
+    );
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
+
 // Initialize Apollo Client
 let client: ApolloClient<NormalizedCacheObject>;
 if (BACKEND_URL !== undefined && BACKEND_PORT !== undefined) {
   client = new ApolloClient({
-    uri: `http://${BACKEND_URL}:${BACKEND_PORT}/`,
     cache: new InMemoryCache(),
     connectToDevTools: true,
+    link: ApolloLink.from([
+      errorLink,
+      new HttpLink({ uri: `http://${BACKEND_URL}:${BACKEND_PORT}/` }),
+    ]),
   });
 }
 

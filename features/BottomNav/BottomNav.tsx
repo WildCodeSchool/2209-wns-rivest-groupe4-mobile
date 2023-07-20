@@ -1,9 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import ProjectScreen from '../../screens/ProjectScreen';
 import Settings from '../Settings';
 import EditorScreen from '../../screens/EditorScreen';
 import BestSharesScreen from 'screens/BestSharesScreen';
+import AccountActivitiesScreen from '../../screens/AccountActivitiesScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,7 +47,7 @@ export default function BottomNav() {
       />
       <Tab.Screen
         name="Project"
-        component={ProjectScreen}
+        component={AccountActivitiesScreen}
         options={{
           title: `Account activities`,
           headerStyle: {
